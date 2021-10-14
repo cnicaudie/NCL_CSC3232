@@ -58,3 +58,8 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# Mac build artifact
+.DS_Store
+Scripts/recordings
+unityProject.vrmanifest
+
