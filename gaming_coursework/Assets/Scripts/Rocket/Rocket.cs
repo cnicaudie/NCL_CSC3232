@@ -7,7 +7,7 @@ public class Rocket : MonoBehaviour
 
     [SerializeField] private List<Transform> m_hoverPoints;
     private float m_hoverHeight = 5.0f;
-    private float m_hoverForce = 100.0f;
+    private float m_hoverForce = 20.0f;
     private bool m_isHovering = false;
 
     private float m_thrustInput;
@@ -72,9 +72,11 @@ public class Rocket : MonoBehaviour
         {
             Transform hoverPoint = m_hoverPoints[i];
 
-            if (Physics.Raycast(hoverPoint.position, -Vector3.up, out hit, m_hoverHeight))
+            if (Physics.Raycast(hoverPoint.position, -transform.up, out hit, m_hoverHeight))
             {
-                m_rigidbody.AddForceAtPosition(Vector3.up * m_hoverForce * (1.0f - (hit.distance / m_hoverHeight)), hoverPoint.position, ForceMode.Acceleration);
+                Debug.DrawRay(hoverPoint.position, -transform.up * m_hoverHeight, Color.red);
+
+                m_rigidbody.AddForceAtPosition(transform.up * m_hoverForce * (1.0f - (hit.distance / m_hoverHeight)), hoverPoint.position, ForceMode.Acceleration);
             }
         }
     }
