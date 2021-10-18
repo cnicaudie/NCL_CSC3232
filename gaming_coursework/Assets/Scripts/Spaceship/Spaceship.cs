@@ -17,7 +17,7 @@ public class Spaceship : MonoBehaviour
     private float m_rotationInput;
     private float m_rotationSlowdownFactor = 0.5f;
 
-    // TODO : define 1 "startRocket" button
+    private float m_slowdownThreshold = 0.1f;
 
     // ===================================
 
@@ -39,13 +39,9 @@ public class Spaceship : MonoBehaviour
             ApplyThrust();
             ApplyRotation();
 
-            if (m_thrustInput == 0.0f) // TODO : use threshold
-            {
-                m_rigidbody.velocity *= m_thrustSlowdownFactor;
-            }
-
-            m_rigidbody.angularVelocity *= m_rotationSlowdownFactor;
         }
+
+        SlowdownVelocity();
     }
 
     private void GetInputs()
@@ -62,6 +58,19 @@ public class Spaceship : MonoBehaviour
     private void StartAndStop()
     {
         m_isHovering = m_isHovering ? false : true;
+    }
+
+    private void SlowdownVelocity()
+    {
+        if (m_thrustInput <= m_slowdownThreshold)
+        {
+            m_rigidbody.velocity *= m_thrustSlowdownFactor;
+        }
+
+        if (m_rigidbody.angularVelocity.magnitude > m_slowdownThreshold)
+        {
+            m_rigidbody.angularVelocity *= m_rotationSlowdownFactor;
+        }
     }
 
     private void Hover()
