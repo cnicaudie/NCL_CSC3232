@@ -44,6 +44,14 @@ public class Spaceship : MonoBehaviour
         SlowdownVelocity();
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("LevelPoint") && !m_isHovering)
+        {
+            Debug.Log("Spaceship landed on a level point !");
+        }
+    }
+
     private void GetInputs()
     {
         m_thrustInput = Input.GetAxisRaw("RocketThrust");
