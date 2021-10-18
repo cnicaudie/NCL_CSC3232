@@ -6,7 +6,7 @@ public class Spaceship : MonoBehaviour
     private Rigidbody m_rigidbody;
 
     [SerializeField] private List<Transform> m_hoverPoints;
-    private float m_hoverHeight = 2.5f;
+    private float m_hoverHeight = 4f;
     private float m_hoverForce = 20.0f;
     private bool m_isHovering = false;
 
