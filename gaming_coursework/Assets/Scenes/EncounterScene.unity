@@ -170,6 +170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_speed: 100
+  m_jumpForce: 10000
 --- !u!54 &656021939
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -374,7 +375,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddb6e2a2e64954fb1a27b1fac8767490, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_speed: 100
+  m_speed: 130
+  m_jumpForce: 3000
 --- !u!54 &983911346
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -577,7 +579,7 @@ GameObject:
   - component: {fileID: 1802551608}
   m_Layer: 0
   m_Name: Ground
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

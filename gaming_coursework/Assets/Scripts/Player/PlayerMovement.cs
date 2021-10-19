@@ -3,11 +3,13 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody m_rigidbody;
+    private Animator m_animator;
 
     private float m_horizontalInput;
     private float m_verticalInput;
+    private bool m_jumpInput;
 
-    [SerializeField] private float m_speed = 100.0f;
+    [SerializeField] private float m_speed = 130.0f;
 
     private float m_moveThreshold = 0.5f;
     private float m_slowdownFactor = 0.5f;
@@ -15,27 +17,60 @@ public class PlayerMovement : MonoBehaviour
     private float m_rotationSmoothTime = 0.1f;
     private float m_rotationVelocity;
 
+    private bool m_isJumping = false;
+    [SerializeField] private float m_jumpForce = 3000.0f;
+
+    private bool m_isGrounded = true;
+
     // ===================================
 
     private void Start()
     {
         m_rigidbody = GetComponent<Rigidbody>();
+        m_animator = GetComponent<Animator>();
     }
 
     private void Update()
     {
         GetInputs();
+
+        UpdateAnimatorParameters();
     }
 
     private void FixedUpdate()
     {
         Move();
+
+        if (m_jumpInput && m_isGrounded)
+        {
+            Jump();
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        // TODO : Use a ground check instead ?
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            if (!m_isGrounded)
+            {
+                m_isGrounded = true;
+                m_isJumping = false;
+            }
+        }
     }
 
     private void GetInputs()
     {
         m_horizontalInput = Input.GetAxis("Horizontal");
         m_verticalInput = Input.GetAxis("Vertical");
+        m_jumpInput = Input.GetButtonDown("Jump");
+    }
+
+    private void UpdateAnimatorParameters()
+    {
+        m_animator.SetFloat("Speed", m_rigidbody.velocity.magnitude);
+        m_animator.SetBool("IsJumping", m_isJumping);
     }
 
     private void SlowdownVelocity()
@@ -53,7 +88,7 @@ public class PlayerMovement : MonoBehaviour
             ApplyVelocity(moveDirection);
             Rotate(moveDirection);
         }
-        else
+        else if (!m_isJumping)
         {
             SlowdownVelocity();
         }
@@ -73,5 +108,13 @@ public class PlayerMovement : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(0f, smoothFacingAngle, 0f);
 
         m_rigidbody.MoveRotation(rotation);
+    }
+
+    private void Jump()
+    {
+        // TODO : Reduce in air speed ?
+        m_isJumping = true;
+        m_isGrounded = false;
+        m_rigidbody.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
     }
 }
