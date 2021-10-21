@@ -4,6 +4,7 @@ using UnityEngine;
 public class Spaceship : MonoBehaviour
 {
     private Rigidbody m_rigidbody;
+    private ParticleSystem m_thrustParticles;
 
     [SerializeField] private List<Transform> m_hoverPoints;
     private float m_hoverHeight = 4f;
@@ -24,11 +25,15 @@ public class Spaceship : MonoBehaviour
     private void Start()
     {
         m_rigidbody = GetComponent<Rigidbody>();
+        m_thrustParticles = GetComponentInChildren<ParticleSystem>();
+
+        EnableParticles(false);
     }
 
     private void Update()
     {
         GetInputs();
+        SetParticlesSpeed();
     }
 
     private void FixedUpdate()
@@ -63,16 +68,29 @@ public class Spaceship : MonoBehaviour
         }
     }
 
+    private void EnableParticles(bool enabled)
+    {
+        var emission = m_thrustParticles.emission;
+        emission.enabled = enabled;
+    }
+
+    private void SetParticlesSpeed()
+    {
+        var main = m_thrustParticles.main;
+        main.startSpeed = m_thrustInput <= m_slowdownThreshold ? 0.5f : 5.0f;
+    }
+
     private void StartAndStop()
     {
         m_isHovering = m_isHovering ? false : true;
+        EnableParticles(m_isHovering);
     }
 
     private void SlowdownVelocity()
     {
         if (m_thrustInput <= m_slowdownThreshold)
         {
-            m_rigidbody.velocity *= m_thrustSlowdownFactor;
+            m_rigidbody.velocity *= m_thrustSlowdownFactor;   
         }
 
         if (m_rigidbody.angularVelocity.magnitude > m_slowdownThreshold)
