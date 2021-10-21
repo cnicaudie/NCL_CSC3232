@@ -213,7 +213,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.7
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.802082
@@ -337,6 +337,7 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
+  - component: {fileID: 963194230}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -425,6 +426,15 @@ MonoBehaviour:
   m_smoothingRate: 0.05
   verticalOffset: 35
   horizontalOffset: 25
+--- !u!45 &963194230
+Skybox:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_CustomSkybox: {fileID: 2100000, guid: d895e479f7d2243ac9f98fbfc1f8349a, type: 2}
 --- !u!1 &983051895
 GameObject:
   m_ObjectHideFlags: 0
@@ -553,7 +563,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddb6e2a2e64954fb1a27b1fac8767490, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_speed: 100
+  m_defaultSpeed: 130
+  m_airSpeed: 80
+  m_jumpForce: 3000
 --- !u!114 &983051902
 MonoBehaviour:
   m_ObjectHideFlags: 0
