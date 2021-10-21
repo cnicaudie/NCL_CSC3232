@@ -9,7 +9,9 @@ public class PlayerMovement : MonoBehaviour
     private float m_verticalInput;
     private bool m_jumpInput;
 
-    [SerializeField] private float m_speed = 130.0f;
+    private float m_speed;
+    [SerializeField] private float m_defaultSpeed = 130.0f;
+    [SerializeField] private float m_airSpeed = 80.0f;
 
     private float m_moveThreshold = 0.5f;
     private float m_slowdownFactor = 0.5f;
@@ -35,6 +37,8 @@ public class PlayerMovement : MonoBehaviour
         GetInputs();
 
         UpdateAnimatorParameters();
+
+        SetSpeed();
     }
 
     private void FixedUpdate()
@@ -71,6 +75,11 @@ public class PlayerMovement : MonoBehaviour
     {
         m_animator.SetFloat("Speed", m_rigidbody.velocity.magnitude);
         m_animator.SetBool("IsJumping", m_isJumping);
+    }
+
+    private void SetSpeed()
+    {
+        m_speed = m_isJumping ? m_airSpeed : m_defaultSpeed;
     }
 
     private void SlowdownVelocity()
@@ -112,7 +121,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        // TODO : Reduce in air speed ?
         m_isJumping = true;
         m_isGrounded = false;
         m_rigidbody.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
