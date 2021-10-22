@@ -5,15 +5,18 @@ public class Spaceship : MonoBehaviour
 {
     private Rigidbody m_rigidbody;
     private ParticleSystem m_thrustParticles;
-
+    
     [SerializeField] private List<Transform> m_hoverPoints;
-    private float m_hoverHeight = 4f;
-    private float m_hoverForce = 20.0f;
+    [SerializeField] private float m_hoverHeight;
+    private float m_hoverHeightMin = 10f;
+    private float m_hoverHeightMax;
     private bool m_isHovering = false;
+    private bool m_isAtMaxHeight = false;
 
     private float m_thrustInput;
     private float m_thrustForce = 500.0f;
     private float m_thrustSlowdownFactor = 0.95f;
+    private float m_planetSpeed;
 
     private float m_rotationInput;
     private float m_rotationSlowdownFactor = 0.5f;
@@ -25,8 +28,8 @@ public class Spaceship : MonoBehaviour
     private void Start()
     {
         m_rigidbody = GetComponent<Rigidbody>();
-        m_thrustParticles = GetComponentInChildren<ParticleSystem>();
 
+        m_thrustParticles = GetComponentInChildren<ParticleSystem>();
         EnableParticles(false);
     }
 
@@ -57,14 +60,27 @@ public class Spaceship : MonoBehaviour
         }
     }
 
+    public void EnterNewOrbit(int orbitHeight)
+    {
+        m_hoverHeight = m_hoverHeightMin;
+        m_isAtMaxHeight = false;
+        m_hoverHeightMax = m_hoverHeightMin + orbitHeight;
+    }
+
     private void GetInputs()
     {
         m_thrustInput = Input.GetAxisRaw("RocketThrust");
         m_rotationInput = Input.GetAxisRaw("RocketRotation");
 
+        // TODO : make buttons
         if (Input.GetKeyDown(KeyCode.S))
         {
             StartAndStop();
+        }
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            ToggleMaxHoverHeight();
         }
     }
 
@@ -86,6 +102,12 @@ public class Spaceship : MonoBehaviour
         EnableParticles(m_isHovering);
     }
 
+    private void ToggleMaxHoverHeight()
+    {
+        m_hoverHeight = m_isAtMaxHeight ? m_hoverHeightMin : m_hoverHeightMax;
+        m_isAtMaxHeight = !m_isAtMaxHeight;
+    }
+
     private void SlowdownVelocity()
     {
         if (m_thrustInput <= m_slowdownThreshold)
@@ -101,17 +123,18 @@ public class Spaceship : MonoBehaviour
 
     private void Hover()
     {
-        RaycastHit hit;
+        int layerMask = ~LayerMask.NameToLayer("Planet");
+        RaycastHit hitInfos;
 
         for (int i = 0; i < m_hoverPoints.Count; i++)
         {
             Transform hoverPoint = m_hoverPoints[i];
 
-            if (Physics.Raycast(hoverPoint.position, -transform.up, out hit, m_hoverHeight))
+            if (Physics.Raycast(hoverPoint.position, -transform.up, out hitInfos, m_hoverHeight, layerMask, QueryTriggerInteraction.Ignore))
             {
-                Debug.DrawRay(hoverPoint.position, -transform.up * m_hoverHeight, Color.red);
+                Debug.DrawRay(hoverPoint.position, -transform.up * hitInfos.distance, Color.red);
 
-                m_rigidbody.AddForceAtPosition(transform.up * m_hoverForce * (1.0f - (hit.distance / m_hoverHeight)), hoverPoint.position, ForceMode.Acceleration);
+                m_rigidbody.AddForceAtPosition(transform.up * m_hoverHeight, hoverPoint.position, ForceMode.Acceleration);
             }
         }
     }
