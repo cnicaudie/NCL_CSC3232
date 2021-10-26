@@ -9,13 +9,12 @@ public class PlanetGravitation : MonoBehaviour
     }
 
     private static bool s_isSpaceshipInOrbit = false;
+
     private bool m_isSpaceshipInThisOrbit = false;
-
-    public delegate void OnSpaceshipEnterOrbit();
-    public event OnSpaceshipEnterOrbit SpaceshipEnterOrbit;
-
-    public delegate void OnSpaceshipExitOrbit();
-    public event OnSpaceshipExitOrbit SpaceshipExitOrbit;
+    public bool IsSpaceshipInThisOrbit
+    {
+        get { return m_isSpaceshipInThisOrbit; }
+    }
 
     // ===================================
 
@@ -34,11 +33,6 @@ public class PlanetGravitation : MonoBehaviour
 
             gravityController.Planet = this;
             spaceship.EnterNewOrbit(GetOrbitHeight());
-
-            if (SpaceshipEnterOrbit != null)
-            {
-                SpaceshipEnterOrbit();
-            }
         }
     }
 
@@ -50,11 +44,6 @@ public class PlanetGravitation : MonoBehaviour
             m_isSpaceshipInThisOrbit = false;
 
             Debug.Log(transform.name + " orbit exited !");
-
-            if (SpaceshipExitOrbit != null)
-            {
-                SpaceshipExitOrbit();
-            }
         }
     }
 
@@ -67,17 +56,5 @@ public class PlanetGravitation : MonoBehaviour
         Debug.Log("Orbit's height : " + orbitSize);
 
         return Mathf.RoundToInt(orbitSize);
-    }
-
-    public float GetPlanetSpeed()
-    {
-        Rigidbody rb = transform.parent.GetComponent<Rigidbody>();
-
-        if (rb != null)
-        {
-            return rb.velocity.magnitude;
-        }
-
-        return 0.0f;
     }
 }

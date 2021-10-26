@@ -3,70 +3,48 @@ using UnityEngine;
 public class PlanetOrbit : MonoBehaviour
 {
     private PlanetGravitation m_planet;
-    private Rigidbody m_rigidbody;
-
+    
     [SerializeField] private GameObject m_gravityTarget;
 
-    [SerializeField] private float gravityScale = 20000;
-    [SerializeField] private float initialVelocity = 15;
-
-    private bool m_hasObjectInOrbit = false;
+    public Vector3 orbitAxis = Vector3.up;
+    public float orbitRadius;
+    public float orbitChangeSpeed;
+    public float orbitSpeed;
 
     // ===================================
 
     private void Start()
     {
         m_planet = GetComponentInChildren<PlanetGravitation>();
-        // TODO : comment these to leave the moon orbitting
-        // TODO : BUT need to figure out how to avoid the spaceship pushing the moon
-        m_planet.SpaceshipExitOrbit += InitOrbit;
-        m_planet.SpaceshipEnterOrbit += PauseOrbit;
 
-        m_rigidbody = GetComponent<Rigidbody>();
-        InitOrbit();
+        transform.position = GetNextOrbitPosition();
     }
 
     private void Update()
     {
-        if (!m_hasObjectInOrbit)
+        if (!m_planet.IsSpaceshipInThisOrbit)
         {
-            transform.LookAt(m_gravityTarget.transform, Vector3.up);
+            // Rotate around gravity target with a slow orbit axis change
+            orbitAxis = GetNextOrbitAxis();
+            transform.RotateAround(m_gravityTarget.transform.position, orbitAxis, orbitSpeed * Time.deltaTime);
+
+            // Adjust distance to target
+            // -> Constant distance makes it easier to reach the moon and avoid collision with earth
+            transform.position = Vector3.MoveTowards(transform.position, GetNextOrbitPosition(), orbitChangeSpeed * Time.deltaTime);
         }
     }
 
-    private void FixedUpdate()
+    private Vector3 GetNextOrbitAxis()
     {
-        if (!m_hasObjectInOrbit)
-        {
-            //m_rigidbody.AddForce(GetForceVector() * initialVelocity, ForceMode.Acceleration);
-            m_rigidbody.AddForce(GetForceVector(), ForceMode.Force);
-        }
+        Vector3 randomAxis = new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1));
+
+        return Vector3.Slerp(orbitAxis, randomAxis.normalized, orbitChangeSpeed * Time.deltaTime);
     }
 
-    private void PauseOrbit()
-    {
-        m_hasObjectInOrbit = true;
-
-        m_rigidbody.constraints = RigidbodyConstraints.FreezeAll;
-    }
-
-    private void InitOrbit()
-    {
-        m_hasObjectInOrbit = false;
-
-        m_rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-
-        transform.LookAt(m_gravityTarget.transform, Vector3.up); 
-
-        m_rigidbody.velocity = transform.right * initialVelocity;
-    }
-
-    private Vector3 GetForceVector()
+    private Vector3 GetNextOrbitPosition()
     {
         Vector3 direction = m_gravityTarget.transform.position - transform.position;
 
-        float q = 1.0f / direction.sqrMagnitude;
-
-        return direction.normalized * q * gravityScale;
+        return -direction.normalized * orbitRadius + m_gravityTarget.transform.position;
     }
 }
