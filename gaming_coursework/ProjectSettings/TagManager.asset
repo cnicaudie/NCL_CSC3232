@@ -5,14 +5,16 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
+  - LevelPoint
+  - Spaceship
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Planet
   - Water
   - UI
-  - 
+  - Overworld
   - 
   - 
   - 
