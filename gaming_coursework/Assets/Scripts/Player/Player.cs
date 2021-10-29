@@ -91,6 +91,9 @@ public class Player : MonoBehaviour
     {
         if (m_objectsInArea.Count > 0)
         {
+            // Always pick up the closest object in the list
+            m_objectsInArea.Sort((obj1, obj2) => Vector3.Distance(obj1.transform.position, transform.position).CompareTo(Vector3.Distance(obj2.transform.position, transform.position)));
+
             m_currentPickUpObject = m_objectsInArea[0];
         }
 
