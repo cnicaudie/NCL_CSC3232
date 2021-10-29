@@ -2,6 +2,14 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
+    public enum CameraMode
+    {
+        Menu,
+        Overworld,
+        EncounterLevel
+    }
+    public CameraMode cameraMode;
+
     [SerializeField] private Transform m_target;
 
     [SerializeField] private float m_smoothingRate = 0.05f;
@@ -14,7 +22,19 @@ public class CameraFollow : MonoBehaviour
 
     private void FixedUpdate()
     {
-        m_offset = new Vector3(m_target.position.x, Mathf.Sign(m_target.position.y) * verticalOffset, Mathf.Sign(m_target.position.z) * horizontalOffset);
+        switch (cameraMode)
+        {
+            case CameraMode.Overworld:
+                m_offset = new Vector3(0f, Mathf.Sign(m_target.position.y) * verticalOffset, Mathf.Sign(m_target.position.z) * horizontalOffset);
+                break;
+
+            case CameraMode.EncounterLevel:
+                m_offset = new Vector3(0f, verticalOffset, -horizontalOffset);
+                break;
+
+            default:
+                break;
+        }
 
         // Apply the camera offset
         Vector3 nextPosition = m_target.position + m_offset;
