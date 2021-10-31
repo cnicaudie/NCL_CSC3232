@@ -5,6 +5,8 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody m_rigidbody;
     private Animator m_animator;
 
+    private Vector3 m_basePosition;
+
     private float m_horizontalInput;
     private float m_verticalInput;
     private bool m_jumpInput;
@@ -30,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
     {
         m_rigidbody = GetComponent<Rigidbody>();
         m_animator = GetComponent<Animator>();
+        m_basePosition = transform.position;
     }
 
     private void Update()
@@ -39,6 +42,11 @@ public class PlayerMovement : MonoBehaviour
         UpdateAnimatorParameters();
 
         SetSpeed();
+
+        if (transform.position.y < -5f)
+        {
+            transform.position = m_basePosition;
+        }
     }
 
     private void FixedUpdate()
