@@ -9,6 +9,8 @@ TagManager:
   - Pickable
   - Placezone
   - Spaceship
+  - Obstacle
+  - Enemy
   layers:
   - Default
   - TransparentFX
