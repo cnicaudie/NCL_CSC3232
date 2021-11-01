@@ -21,8 +21,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        // TODO : Make buttons
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetButtonDown("PlayerPick"))
         {
             if (m_hasPickedUpObject)
             {
@@ -45,7 +44,7 @@ public class Player : MonoBehaviour
         {
             m_currentPickUpObject.transform.position = m_pickUpLocation.position;
 
-            if (Input.GetKeyDown(KeyCode.T))
+            if (Input.GetButtonDown("Fire2"))
             {
                 ThrowObject();
             }
