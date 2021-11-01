@@ -76,7 +76,7 @@ public class PlayerMovement : MonoBehaviour
     {
         m_horizontalInput = Input.GetAxis("Horizontal");
         m_verticalInput = Input.GetAxis("Vertical");
-        m_jumpInput = Input.GetButtonDown("Jump");
+        m_jumpInput = Input.GetButton("Jump");
     }
 
     private void UpdateAnimatorParameters()
