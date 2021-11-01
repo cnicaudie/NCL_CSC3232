@@ -11,6 +11,7 @@ TagManager:
   - Spaceship
   - Obstacle
   - Enemy
+  - Bullet
   layers:
   - Default
   - TransparentFX
@@ -21,7 +22,7 @@ TagManager:
   - Overworld
   - Player
   - Pickable
-  - 
+  - Bullet
   - 
   - 
   - 

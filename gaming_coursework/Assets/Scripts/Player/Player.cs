@@ -124,11 +124,7 @@ public class Player : MonoBehaviour
         if (m_currentPickUpObject != null)
         {
             m_hasPickedUpObject = false;
-
-            Rigidbody objectRb = m_currentPickUpObject.GetComponent<Rigidbody>();
-            objectRb.useGravity = true;
-            objectRb.AddForce(transform.forward * m_throwForce, ForceMode.Impulse);
-
+            m_currentPickUpObject.Throw(transform.forward * m_throwForce);
             m_currentPickUpObject = null;
         }
     }
