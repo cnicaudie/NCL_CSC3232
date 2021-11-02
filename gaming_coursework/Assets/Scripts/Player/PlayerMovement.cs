@@ -87,6 +87,7 @@ public class PlayerMovement : MonoBehaviour
     {
         m_animator.SetFloat("Speed", m_rigidbody.velocity.magnitude);
         m_animator.SetBool("IsJumping", m_isJumping);
+        m_animator.SetBool("IsGrounded", m_isGrounded);
     }
 
     private void GroundCheck()
