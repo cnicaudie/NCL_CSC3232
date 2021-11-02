@@ -43,7 +43,7 @@ public class Bullet : MonoBehaviour
         Enemy enemy = collision.gameObject.GetComponent<Enemy>();
         Rigidbody rb = collision.gameObject.GetComponent<Rigidbody>();
 
-        if (enemy != null && rb != null && !enemy.IsDizzy && !enemy.WasHit)
+        if (enemy != null && rb != null && !enemy.IsDizzy() && !enemy.WasHit())
         {
             rb.AddExplosionForce(m_explosionForce, transform.position, m_explosionRadius, 0f, ForceMode.Force);
         }

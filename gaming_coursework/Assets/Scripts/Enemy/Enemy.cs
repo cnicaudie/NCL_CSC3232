@@ -3,28 +3,20 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    private Rigidbody m_rigidbody;
     private Animator m_animator;
     private NavMeshAgent m_agent;
+    private Player m_player;
 
-    [SerializeField] private Player m_player;
+    public enum EnemyState
+    {
+        Idle, Walk, Dizzy, Hit
+    }
+    [SerializeField] private EnemyState m_state;
 
     [SerializeField] private float m_maxPickNewPositionDistance = 15f;
     private float m_pickNewPositionThreshold = 0.5f;
     private float m_pickNewPositionCooldown = 5f;
     private float m_lastPositionPickTime = 0f;
-
-    [SerializeField] private bool m_wasHit = false;
-    public bool WasHit
-    {
-        get { return m_wasHit; }
-    }
-
-    [SerializeField] private bool m_isDizzy = false;
-    public bool IsDizzy
-    {
-        get { return m_isDizzy; }
-    }
 
     private float m_hitCooldown = 1.5f;
     private float m_dizzyCooldown = 3f;
@@ -34,60 +26,111 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
-        m_rigidbody = GetComponent<Rigidbody>();
         m_animator = GetComponent<Animator>();
         m_agent = GetComponent<NavMeshAgent>();
+        m_player = FindObjectOfType<Player>();
+
+        m_state = EnemyState.Idle;
     }
 
     private void Update()
     {
-        if (!m_wasHit && !m_isDizzy)
-        {
-            m_lastPositionPickTime += Time.deltaTime;
+        UpdateStates();
+        UpdateAnimatorParameters();
+    }
 
-            if (m_agent.remainingDistance < m_pickNewPositionThreshold && m_lastPositionPickTime >= m_pickNewPositionCooldown)
+    private void UpdateStates()
+    {
+        switch (m_state)
+        {
+            case EnemyState.Idle: UpdateIdle(); break;
+
+            case EnemyState.Walk: UpdateWalk(); break;
+
+            case EnemyState.Dizzy: UpdateDizzy(); break;
+
+            case EnemyState.Hit: UpdateHit(); break;
+
+            default: break;
+        }
+    }
+
+    private void UpdateIdle()
+    {
+        m_lastPositionPickTime += Time.deltaTime;
+
+        if (!m_agent.isStopped)
+            m_agent.isStopped = true;
+
+        if (m_lastPositionPickTime >= m_pickNewPositionCooldown)
+        {
+            m_state = EnemyState.Walk;
+        }
+    }
+
+    private void UpdateWalk()
+    {
+        m_lastPositionPickTime += Time.deltaTime;
+
+        if (m_agent.isStopped)
+            m_agent.isStopped = false;
+
+        if (m_agent.remainingDistance < m_pickNewPositionThreshold)
+        {
+            if (m_lastPositionPickTime < m_pickNewPositionCooldown)
+            {
+                m_state = EnemyState.Idle;
+            }
+            else
             {
                 PickRandomPosition();
             }
         }
-        else
+    }
+
+    private void UpdateDizzy()
+    {
+        m_lastHitTime += Time.deltaTime;
+
+        if (!m_agent.isStopped)
+            m_agent.isStopped = true;
+
+        if (m_lastHitTime >= m_dizzyCooldown)
         {
-            m_lastHitTime += Time.deltaTime;
-
-            if (m_isDizzy && m_lastHitTime >= m_dizzyCooldown)
-            {
-                m_isDizzy = false;
-                m_agent.isStopped = false;
-            }
-            else if (m_wasHit && m_lastHitTime >= m_hitCooldown)
-            {
-                m_wasHit = false;
-                m_agent.isStopped = false;
-            }
+            m_state = EnemyState.Idle;
         }
+    }
 
-        UpdateAnimatorParameters();
+    private void UpdateHit()
+    {
+        m_lastHitTime += Time.deltaTime;
+
+        if (!m_agent.isStopped)
+            m_agent.isStopped = true;
+
+        if (m_lastHitTime >= m_hitCooldown)
+        {
+            m_state = EnemyState.Idle;
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!m_wasHit && !m_isDizzy)
+        if (!WasHit())
         {
             if (collision.gameObject.CompareTag("Bullet"))
             {
-                m_wasHit = true;
                 m_lastHitTime = 0f;
-                m_agent.isStopped = true;
+                m_state = EnemyState.Hit;
             }
-            else if (collision.gameObject.CompareTag("Pickable"))
+            else if (collision.gameObject.CompareTag("Pickable") && !IsDizzy())
             {
                 Pickable pickableObject = collision.gameObject.GetComponent<Pickable>();
 
                 if (pickableObject != null && pickableObject.WasThrown)
                 {
-                    m_isDizzy = true;
                     m_lastHitTime = 0f;
-                    m_agent.isStopped = true;
+                    m_state = EnemyState.Dizzy;
                 }
             }
         }
@@ -105,11 +148,21 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public bool IsDizzy()
+    {
+        return m_state == EnemyState.Dizzy;
+    }
+
+    public bool WasHit()
+    {
+        return m_state == EnemyState.Hit;
+    }
+
     private void UpdateAnimatorParameters()
     {
         m_animator.SetFloat("Speed", m_agent.velocity.magnitude);
-        m_animator.SetBool("WasHit", m_wasHit);
-        m_animator.SetBool("IsDizzy", m_isDizzy);
+        m_animator.SetBool("WasHit", WasHit());
+        m_animator.SetBool("IsDizzy", IsDizzy());
     }
 
     private void PickRandomPosition()
