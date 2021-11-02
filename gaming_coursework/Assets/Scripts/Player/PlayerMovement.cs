@@ -11,6 +11,10 @@ public class PlayerMovement : MonoBehaviour
     private float m_verticalInput;
     private bool m_jumpInput;
 
+    private float m_groundCheckRadius = 0.3f;
+    [SerializeField] private LayerMask m_groundLayer;
+    [SerializeField] private bool m_isGrounded = true;
+
     private float m_speed;
     [SerializeField] private float m_defaultSpeed = 130.0f;
     [SerializeField] private float m_airSpeed = 80.0f;
@@ -21,10 +25,8 @@ public class PlayerMovement : MonoBehaviour
     private float m_rotationSmoothTime = 0.1f;
     private float m_rotationVelocity;
 
-    private bool m_isJumping = false;
+    [SerializeField] private bool m_isJumping = false;
     [SerializeField] private float m_jumpForce = 3000.0f;
-
-    private bool m_isGrounded = true;
 
     // ===================================
 
@@ -51,25 +53,27 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        GroundCheck();
+
         Move();
 
-        if (m_jumpInput && m_isGrounded)
+        if (m_isGrounded)
         {
-            Jump();
-        }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        // TODO : Use a ground check instead ?
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            if (!m_isGrounded)
+            if (m_jumpInput && !m_isJumping)
             {
-                m_isGrounded = true;
+                Jump();
+            }
+            else
+            {
                 m_isJumping = false;
             }
         }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, m_groundCheckRadius);
     }
 
     private void GetInputs()
@@ -85,9 +89,14 @@ public class PlayerMovement : MonoBehaviour
         m_animator.SetBool("IsJumping", m_isJumping);
     }
 
+    private void GroundCheck()
+    {
+        m_isGrounded = Physics.CheckSphere(transform.position, m_groundCheckRadius, m_groundLayer);
+    }
+
     private void SetSpeed()
     {
-        m_speed = m_isJumping ? m_airSpeed : m_defaultSpeed;
+        m_speed = m_isGrounded ? m_defaultSpeed : m_airSpeed;
     }
 
     private void SlowdownVelocity()
@@ -105,7 +114,7 @@ public class PlayerMovement : MonoBehaviour
             ApplyVelocity(moveDirection);
             Rotate(moveDirection);
         }
-        else if (!m_isJumping)
+        else if (m_isGrounded)
         {
             SlowdownVelocity();
         }
@@ -130,7 +139,6 @@ public class PlayerMovement : MonoBehaviour
     private void Jump()
     {
         m_isJumping = true;
-        m_isGrounded = false;
         m_rigidbody.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
     }
 }
