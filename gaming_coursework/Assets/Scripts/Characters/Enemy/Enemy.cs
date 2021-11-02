@@ -5,11 +5,13 @@ public class Enemy : MonoBehaviour
 {
     private Animator m_animator;
     private NavMeshAgent m_agent;
+    private Health m_health;
+
     private Player m_player;
 
     public enum EnemyState
     {
-        Idle, Walk, Dizzy, Hit
+        Idle, Walk, Dizzy, Hit, Dead
     }
     [SerializeField] private EnemyState m_state;
 
@@ -28,6 +30,8 @@ public class Enemy : MonoBehaviour
     {
         m_animator = GetComponent<Animator>();
         m_agent = GetComponent<NavMeshAgent>();
+        m_health = GetComponent<Health>();
+
         m_player = FindObjectOfType<Player>();
 
         m_state = EnemyState.Idle;
@@ -51,7 +55,9 @@ public class Enemy : MonoBehaviour
 
             case EnemyState.Hit: UpdateHit(); break;
 
-            default: break;
+            default:
+                m_agent.isStopped = true;
+                break;
         }
     }
 
@@ -121,7 +127,11 @@ public class Enemy : MonoBehaviour
             if (collision.gameObject.CompareTag("Bullet"))
             {
                 m_lastHitTime = 0f;
-                m_state = EnemyState.Hit;
+
+                // TODO : get the damage amount from the bullet / hit area
+                m_health.Damage(10f);
+
+                m_state = m_health.IsDead ? EnemyState.Dead : EnemyState.Hit;
             }
             else if (collision.gameObject.CompareTag("Pickable") && !IsDizzy())
             {
@@ -131,6 +141,8 @@ public class Enemy : MonoBehaviour
                 {
                     m_lastHitTime = 0f;
                     m_state = EnemyState.Dizzy;
+
+                    // TODO : Damage a little ?
                 }
             }
         }
@@ -163,6 +175,7 @@ public class Enemy : MonoBehaviour
         m_animator.SetFloat("Speed", m_agent.velocity.magnitude);
         m_animator.SetBool("WasHit", WasHit());
         m_animator.SetBool("IsDizzy", IsDizzy());
+        m_animator.SetBool("IsDead", m_health.IsDead);
     }
 
     private void PickRandomPosition()

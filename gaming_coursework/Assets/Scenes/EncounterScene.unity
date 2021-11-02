@@ -5084,8 +5084,9 @@ GameObject:
   - component: {fileID: 973933894819842439}
   - component: {fileID: 973933894819842443}
   - component: {fileID: 973933894819842445}
+  - component: {fileID: 973933894819842446}
   m_Layer: 0
-  m_Name: Enemy2
+  m_Name: Enemy1
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5204,10 +5205,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2242cb3dc91b48b0abeca39d17ff351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_player: {fileID: 1147750756314879}
+  m_state: 0
   m_maxPickNewPositionDistance: 8
-  m_wasHit: 0
-  m_isDizzy: 0
+--- !u!114 &973933894819842446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 973933894819842438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 130410e2c622340968c06ea3a3fe04a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_maxHealth: 100
 --- !u!1 &973933894819842460
 GameObject:
   m_ObjectHideFlags: 0
