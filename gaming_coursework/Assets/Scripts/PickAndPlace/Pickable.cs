@@ -25,6 +25,14 @@ public class Pickable : MonoBehaviour
         m_rigidbody = GetComponent<Rigidbody>();
     }
 
+    private void Update()
+    {
+        if (transform.position.y < -5f)
+        {
+            Destroy(gameObject);
+        }
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground") && m_wasThrown)
