@@ -5206,7 +5206,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_state: 0
-  m_maxPickNewPositionDistance: 8
+  m_actionRadius: 7
 --- !u!114 &973933894819842446
 MonoBehaviour:
   m_ObjectHideFlags: 0

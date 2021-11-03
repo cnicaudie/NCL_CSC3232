@@ -11,13 +11,14 @@ public class Enemy : MonoBehaviour
 
     public enum EnemyState
     {
-        Idle, Walk, Dizzy, Hit, Dead
+        Idle, Walk, ChasePlayer, Dizzy, Hit, Dead
     }
     [SerializeField] private EnemyState m_state;
 
-    [SerializeField] private float m_maxPickNewPositionDistance = 15f;
-    private float m_pickNewPositionThreshold = 0.5f;
-    private float m_pickNewPositionCooldown = 5f;
+    [SerializeField] private float m_actionRadius = 7f;
+
+    private float m_distanceThreshold = 0.5f;
+    private float m_pickNewPositionCooldown = 3f;
     private float m_lastPositionPickTime = 0f;
 
     private float m_hitCooldown = 1.5f;
@@ -39,8 +40,15 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
+        UpdateTimers();
         UpdateStates();
         UpdateAnimatorParameters();
+    }
+
+    private void UpdateTimers()
+    {
+        m_lastPositionPickTime += Time.deltaTime;
+        m_lastHitTime += Time.deltaTime;
     }
 
     private void UpdateStates()
@@ -50,6 +58,8 @@ public class Enemy : MonoBehaviour
             case EnemyState.Idle: UpdateIdle(); break;
 
             case EnemyState.Walk: UpdateWalk(); break;
+
+            case EnemyState.ChasePlayer: UpdateChasePlayer(); break;
 
             case EnemyState.Dizzy: UpdateDizzy(); break;
 
@@ -63,8 +73,6 @@ public class Enemy : MonoBehaviour
 
     private void UpdateIdle()
     {
-        m_lastPositionPickTime += Time.deltaTime;
-
         if (!m_agent.isStopped)
             m_agent.isStopped = true;
 
@@ -76,12 +84,14 @@ public class Enemy : MonoBehaviour
 
     private void UpdateWalk()
     {
-        m_lastPositionPickTime += Time.deltaTime;
-
         if (m_agent.isStopped)
             m_agent.isStopped = false;
 
-        if (m_agent.remainingDistance < m_pickNewPositionThreshold)
+        if (Vector3.Distance(transform.position, m_player.transform.position) < m_actionRadius)
+        {
+            m_state = EnemyState.ChasePlayer;
+        }
+        else if (m_agent.remainingDistance < m_distanceThreshold)
         {
             if (m_lastPositionPickTime < m_pickNewPositionCooldown)
             {
@@ -94,10 +104,20 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    private void UpdateChasePlayer()
+    {
+        if (Vector3.Distance(transform.position, m_player.transform.position) > m_actionRadius)
+        {
+            m_state = EnemyState.Idle;
+        }
+        else
+        {
+            m_agent.destination = m_player.transform.position;
+        }
+    }
+
     private void UpdateDizzy()
     {
-        m_lastHitTime += Time.deltaTime;
-
         if (!m_agent.isStopped)
             m_agent.isStopped = true;
 
@@ -109,8 +129,6 @@ public class Enemy : MonoBehaviour
 
     private void UpdateHit()
     {
-        m_lastHitTime += Time.deltaTime;
-
         if (!m_agent.isStopped)
             m_agent.isStopped = true;
 
@@ -118,6 +136,14 @@ public class Enemy : MonoBehaviour
         {
             m_state = EnemyState.Idle;
         }
+    }
+
+    private void UpdateAnimatorParameters()
+    {
+        m_animator.SetFloat("Speed", m_agent.velocity.magnitude);
+        m_animator.SetBool("WasHit", WasHit());
+        m_animator.SetBool("IsDizzy", IsDizzy());
+        m_animator.SetBool("IsDead", m_health.IsDead);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -151,7 +177,7 @@ public class Enemy : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, m_maxPickNewPositionDistance);
+        Gizmos.DrawWireSphere(transform.position, m_actionRadius);
 
         if (m_agent != null)
         {
@@ -170,24 +196,16 @@ public class Enemy : MonoBehaviour
         return m_state == EnemyState.Hit;
     }
 
-    private void UpdateAnimatorParameters()
-    {
-        m_animator.SetFloat("Speed", m_agent.velocity.magnitude);
-        m_animator.SetBool("WasHit", WasHit());
-        m_animator.SetBool("IsDizzy", IsDizzy());
-        m_animator.SetBool("IsDead", m_health.IsDead);
-    }
-
     private void PickRandomPosition()
     {
         Vector3 destination = transform.position;
-        Vector2 randomDirection = UnityEngine.Random.insideUnitCircle * m_maxPickNewPositionDistance;
+        Vector2 randomDirection = UnityEngine.Random.insideUnitCircle * m_actionRadius;
 
         destination.x += randomDirection.x;
         destination.z += randomDirection.y;
 
         NavMeshHit navHit;
-        NavMesh.SamplePosition(destination, out navHit, m_maxPickNewPositionDistance, NavMesh.AllAreas);
+        NavMesh.SamplePosition(destination, out navHit, m_actionRadius, NavMesh.AllAreas);
 
         m_agent.destination = navHit.position;
 
