@@ -5,12 +5,12 @@ public class Enemy : Entity
 {
     private Animator m_animator;
     private NavMeshAgent m_agent;
-    
+    private GameObject[] m_hidespots;
     private Player m_player;
 
     public enum EnemyState
     {
-        Idle, Walk, Chase, Attack, Dizzy, Hit, Dead
+        Idle, Walk, Chase, Attack, Hide, Dizzy, Hit, Dead
     }
     [SerializeField] private EnemyState m_state;
 
@@ -22,12 +22,13 @@ public class Enemy : Entity
     
     // ===================================
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
+
         m_animator = GetComponent<Animator>();
         m_agent = GetComponent<NavMeshAgent>();
-        m_health = GetComponent<Health>();
-
+        m_hidespots = GameObject.FindGameObjectsWithTag("Hidespot");
         m_player = FindObjectOfType<Player>();
 
         m_state = EnemyState.Idle;
@@ -36,6 +37,7 @@ public class Enemy : Entity
     protected override void Update()
     {
         base.Update();
+
         UpdateTimers();
         UpdateStates();
         UpdateAnimatorParameters();
@@ -57,6 +59,8 @@ public class Enemy : Entity
             case EnemyState.Chase: Chase(); break;
 
             case EnemyState.Attack: Attack(); break;
+
+            case EnemyState.Hide: Hide(); break;
 
             case EnemyState.Dizzy: Dizzy(); break;
 
@@ -121,6 +125,17 @@ public class Enemy : Entity
         transform.LookAt(m_player.transform);
     }
 
+    private void Hide()
+    {
+        if (m_agent.isStopped)
+            m_agent.isStopped = false;
+
+        if (m_agent.remainingDistance < m_distanceThreshold)
+        {
+            m_state = EnemyState.Idle;
+        }
+    }
+
     private void Dizzy()
     {
         if (!m_agent.isStopped)
@@ -146,9 +161,9 @@ public class Enemy : Entity
     private void UpdateAnimatorParameters()
     {
         m_animator.SetFloat("Speed", m_agent.velocity.magnitude);
-        m_animator.SetBool("IsAttacking", IsAttacking());
-        m_animator.SetBool("WasHit", WasHit());
-        m_animator.SetBool("IsDizzy", IsDizzy());
+        m_animator.SetBool("IsAttacking", m_state == EnemyState.Attack);
+        m_animator.SetBool("WasHit", m_state == EnemyState.Hit);
+        m_animator.SetBool("IsDizzy", m_state == EnemyState.Dizzy);
         m_animator.SetBool("IsDead", m_isDead);
     }
 
@@ -164,8 +179,8 @@ public class Enemy : Entity
     {
         if (other.gameObject.CompareTag("Player") && m_state == EnemyState.Attack)
         {
-            // TODO : Hide state
-            m_state = EnemyState.Idle;
+            PickRandomHidespot();
+            m_state = EnemyState.Hide;
         }
     }
 
@@ -205,25 +220,10 @@ public class Enemy : Entity
         }
     }
 
-    public bool IsAttacking()
-    {
-        return m_state == EnemyState.Attack;
-    }
-
-    public bool IsDizzy()
-    {
-        return m_state == EnemyState.Dizzy;
-    }
-
-    public bool WasHit()
-    {
-        return m_state == EnemyState.Hit;
-    }
-
     private void PickRandomPosition()
     {
         Vector3 destination = transform.position;
-        Vector2 randomDirection = UnityEngine.Random.insideUnitCircle * m_actionRange;
+        Vector2 randomDirection = Random.insideUnitCircle * m_actionRange;
 
         destination.x += randomDirection.x;
         destination.z += randomDirection.y;
@@ -234,5 +234,18 @@ public class Enemy : Entity
         m_agent.destination = navHit.position;
 
         m_lastPositionPickTime = 0f;
+    }
+
+    private void PickRandomHidespot()
+    {
+        if (m_hidespots.Length > 0)
+        {
+            int randomIndex = Random.Range(0, m_hidespots.Length);
+            m_agent.destination = m_hidespots[randomIndex].transform.position;
+        }
+        else
+        {
+            Debug.LogError("No hidespots are defined !");
+        }
     }
 }

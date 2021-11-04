@@ -15,6 +15,8 @@ public class Player : Entity
                 Debug.Log("Player got punched by enemy");
 
                 Damage(hitArea.GetAttackDamage());
+
+                // TODO : Change physic material temporary
             }
         }
     }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Entity : MonoBehaviour
 {
-    protected Health m_health;
+    [SerializeField] protected Health m_health;
 
     protected bool m_isDead = false;
     public bool IsDead

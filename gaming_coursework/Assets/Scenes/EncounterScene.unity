@@ -626,6 +626,37 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &589401882
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 589401883}
+  m_Layer: 0
+  m_Name: HideSpots
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &589401883
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 589401882}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1559851431}
+  m_Father: {fileID: 1003045091}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &690759257
 GameObject:
   m_ObjectHideFlags: 0
@@ -914,6 +945,7 @@ Transform:
   - {fileID: 253131552}
   - {fileID: 1802551611}
   - {fileID: 1578367509}
+  - {fileID: 589401883}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2298,6 +2330,36 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!1 &1559851430
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1559851431}
+  m_Layer: 0
+  m_Name: HideSpot1
+  m_TagString: Hidespot
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1559851431
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1559851430}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -17, y: 0, z: -14}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 589401883}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1578367508
 GameObject:
   m_ObjectHideFlags: 0
@@ -3326,6 +3388,7 @@ GameObject:
   - component: {fileID: 983911347}
   - component: {fileID: 983911345}
   - component: {fileID: 1147750756314879}
+  - component: {fileID: 1147750756314878}
   m_Layer: 7
   m_Name: AstronautPlayer
   m_TagString: Player
@@ -3333,6 +3396,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1147750756314878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1147750756314877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 130410e2c622340968c06ea3a3fe04a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_currentHealth: 0
 --- !u!114 &1147750756314879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3346,6 +3422,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_actionRange: 7
+  m_isDamageable: 1
 --- !u!1 &1158020308090769
 GameObject:
   m_ObjectHideFlags: 0
@@ -4597,7 +4674,7 @@ GameObject:
   - component: {fileID: 973933894819842148}
   m_Layer: 11
   m_Name: hand_l
-  m_TagString: Glove
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4629,7 +4706,7 @@ GameObject:
   - component: {fileID: 973933894819842147}
   m_Layer: 11
   m_Name: hand_r
-  m_TagString: Glove
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4772,7 +4849,7 @@ GameObject:
   - component: {fileID: 973933894819842165}
   m_Layer: 11
   m_Name: head
-  m_TagString: Head
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5060,7 +5137,7 @@ GameObject:
   - component: {fileID: 973933894819842273}
   m_Layer: 11
   m_Name: spine_02
-  m_TagString: Body
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5439,6 +5516,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_actionRange: 7
+  m_isDamageable: 1
   m_state: 0
 --- !u!114 &973933894819842446
 MonoBehaviour:
@@ -5452,7 +5530,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 130410e2c622340968c06ea3a3fe04a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_maxHealth: 100
+  m_currentHealth: 0
 --- !u!1 &973933894819842460
 GameObject:
   m_ObjectHideFlags: 0
