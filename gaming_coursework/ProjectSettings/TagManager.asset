@@ -10,9 +10,9 @@ TagManager:
   - Placezone
   - Spaceship
   - Obstacle
-  - Enemy
   - Bullet
   - Trampoline
+  - PickUpZone
   layers:
   - Default
   - TransparentFX
@@ -25,7 +25,7 @@ TagManager:
   - Pickable
   - Bullet
   - PlayerWalkable
-  - 
+  - Enemy
   - 
   - 
   - 

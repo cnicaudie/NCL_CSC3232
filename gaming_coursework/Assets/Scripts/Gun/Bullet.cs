@@ -22,10 +22,10 @@ public class Bullet : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         m_rigidbody.useGravity = true;
-        
-        if (collision.gameObject.CompareTag("Enemy"))
+
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
-            Explode(collision);
+            Explode(collision.gameObject);
         }
         else if (collision.gameObject.CompareTag("Obstacle")
             || collision.gameObject.CompareTag("Ground"))
@@ -38,12 +38,12 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    private void Explode(Collision collision)
+    private void Explode(GameObject collisionObject)
     {
-        Enemy enemy = collision.gameObject.GetComponent<Enemy>();
-        Rigidbody rb = collision.gameObject.GetComponent<Rigidbody>();
+        Enemy enemy = collisionObject.GetComponent<Enemy>();
+        Rigidbody rb = collisionObject.GetComponent<Rigidbody>();
 
-        if (enemy != null && rb != null && !enemy.IsDizzy() && !enemy.WasHit())
+        if (enemy != null && enemy.IsDamageable && rb != null)
         {
             rb.AddExplosionForce(m_explosionForce, transform.position, m_explosionRadius, 0f, ForceMode.Force);
         }
