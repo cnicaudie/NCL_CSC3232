@@ -18,14 +18,15 @@ public class Entity : MonoBehaviour
         get { return m_isDamageable; }
     }
 
-    protected float m_damageCooldown = 1.5f;
-    protected float m_lastDamageTime = 0f;
+    [SerializeField] protected float m_damageCooldown = 1.5f;
+    protected float m_lastDamageTime;
 
     // ===================================
 
     protected virtual void Start()
     {
         m_health = GetComponent<Health>();
+        m_lastDamageTime = m_damageCooldown;
     }
 
     protected virtual void Update()

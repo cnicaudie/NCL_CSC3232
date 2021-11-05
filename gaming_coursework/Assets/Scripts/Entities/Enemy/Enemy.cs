@@ -220,6 +220,11 @@ public class Enemy : Entity
         }
     }
 
+    public bool IsAttacking()
+    {
+        return m_state == EnemyState.Attack;
+    }
+
     private void PickRandomPosition()
     {
         Vector3 destination = transform.position;

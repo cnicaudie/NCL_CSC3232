@@ -3408,6 +3408,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 130410e2c622340968c06ea3a3fe04a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_maxHealth: 100
   m_currentHealth: 0
 --- !u!114 &1147750756314879
 MonoBehaviour:
@@ -3421,8 +3422,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27630a713c0a6456eab4d94dda82c0b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_health: {fileID: 0}
   m_actionRange: 7
   m_isDamageable: 1
+  m_damageCooldown: 4
+  m_defaultMaterial: {fileID: 13400000, guid: f7332e59a291c46df9e202c2298e0dc0, type: 2}
+  m_injuredMaterial: {fileID: 13400000, guid: 9d2d356482d594ac3993d0665390fbb7, type: 2}
 --- !u!1 &1158020308090769
 GameObject:
   m_ObjectHideFlags: 0
@@ -5515,8 +5520,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2242cb3dc91b48b0abeca39d17ff351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_health: {fileID: 0}
   m_actionRange: 7
   m_isDamageable: 1
+  m_damageCooldown: 1.5
   m_state: 0
 --- !u!114 &973933894819842446
 MonoBehaviour:
@@ -5530,6 +5537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 130410e2c622340968c06ea3a3fe04a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_maxHealth: 2
   m_currentHealth: 0
 --- !u!1 &973933894819842460
 GameObject:
