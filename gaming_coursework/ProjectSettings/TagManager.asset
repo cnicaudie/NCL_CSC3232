@@ -9,6 +9,11 @@ TagManager:
   - Pickable
   - Placezone
   - Spaceship
+  - Obstacle
+  - Bullet
+  - Trampoline
+  - PickUpZone
+  - Hidespot
   layers:
   - Default
   - TransparentFX
@@ -17,11 +22,11 @@ TagManager:
   - Water
   - UI
   - Overworld
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Pickable
+  - Bullet
+  - PlayerWalkable
+  - Enemy
   - 
   - 
   - 

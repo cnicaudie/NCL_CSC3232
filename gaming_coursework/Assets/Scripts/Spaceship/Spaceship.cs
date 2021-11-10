@@ -74,13 +74,12 @@ public class Spaceship : MonoBehaviour
         m_thrustInput = m_isAtTargetHeight ? Input.GetAxisRaw("RocketThrust") : 0f;
         m_rotationInput = Input.GetAxisRaw("RocketRotation");
 
-        // TODO : make buttons
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetButtonDown("RocketStartStop"))
         {
             StartAndStop();
         }
 
-        if (Input.GetKeyDown(KeyCode.M))
+        if (Input.GetButtonDown("RocketSwitchHeight"))
         {
             ToggleMaxHoverHeight();
         }
