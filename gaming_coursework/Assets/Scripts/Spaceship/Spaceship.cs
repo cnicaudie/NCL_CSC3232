@@ -24,6 +24,9 @@ public class Spaceship : MonoBehaviour
 
     private float m_slowdownThreshold = 0.1f;
 
+    public delegate void OnLevelPointEnter(string levelName);
+    public event OnLevelPointEnter EnterLevelPoint;
+
     // ===================================
 
     private void Start()
@@ -36,27 +39,38 @@ public class Spaceship : MonoBehaviour
 
     private void Update()
     {
-        GetInputs();
-        SetParticlesSpeed();
+        if (GameManager.IsOverworldPlaying())
+        {
+            GetInputs();
+            SetParticlesSpeed();
+        }
     }
 
     private void FixedUpdate()
     {
-        if (m_isHovering)
+        if (GameManager.IsOverworldPlaying())
         {
-            Hover();
-            ApplyThrust();
-            ApplyRotation();
-        }
+            if (m_isHovering)
+            {
+                Hover();
+                ApplyThrust();
+                ApplyRotation();
+            }
 
-        SlowdownVelocity();
+            SlowdownVelocity();
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("LevelPoint") && !m_isHovering)
         {
-            Debug.Log("Spaceship landed on a level point !");
+            LevelPoint levelPoint = other.gameObject.GetComponent<LevelPoint>();
+
+            if (EnterLevelPoint != null && levelPoint != null)
+            {
+                EnterLevelPoint(levelPoint.levelName);
+            }
         }
     }
 

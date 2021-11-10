@@ -994,6 +994,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfd35f72342b7411bbd2e4e8577d0848, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startType: 1
 --- !u!4 &1086503829
 Transform:
   m_ObjectHideFlags: 0
@@ -2284,8 +2285,8 @@ MonoBehaviour:
   m_cameraMode: 2
   m_target: {fileID: 4268596302265603}
   m_smoothingRate: 0.05
-  verticalOffset: 15
-  horizontalOffset: 25
+  verticalOffset: 10
+  horizontalOffset: 15
 --- !u!1 &1725313073
 GameObject:
   m_ObjectHideFlags: 0

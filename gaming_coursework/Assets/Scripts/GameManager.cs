@@ -1,16 +1,30 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    private UIManager m_uiManager;
     private CameraController m_camera;
+
     private LevelManager m_levelManager;
+    private string m_nextLevelName;
+    
     private Player m_player;
+    private Spaceship m_spaceship;
 
     public enum GameState
     {
-        Menu, Playing
+        Menu, Overworld, Level
     }
     public static GameState gameState;
+
+    // TODO : Debug tool, remove later
+    public enum StartType
+    {
+        Overworld, Level
+    }
+    public StartType startType;
 
     // ===================================
 
@@ -28,13 +42,37 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        Init();
+        // TODO : Remove later
+        switch (startType)
+        {
+            case StartType.Overworld:
+                m_uiManager = FindObjectOfType<UIManager>();
+                m_camera = FindObjectOfType<CameraController>();
+                gameState = GameState.Menu;
+                break;
+
+            case StartType.Level:
+                InitLevel();
+                break;
+
+            default:
+                break;
+        }
     }
 
-    private void Init()
+    private void InitOverworld()
     {
-        // TODO : Change when adding UI
-        gameState = GameState.Playing;
+        gameState = GameState.Overworld;
+
+        m_camera = FindObjectOfType<CameraController>();
+
+        m_spaceship = FindObjectOfType<Spaceship>();
+        m_spaceship.EnterLevelPoint += EnterLevelPoint;
+    }
+
+    private void InitLevel()
+    {
+        gameState = GameState.Level;
 
         m_camera = FindObjectOfType<CameraController>();
 
@@ -48,7 +86,72 @@ public class GameManager : MonoBehaviour
 
     public static bool IsGamePlaying()
     {
-        return gameState == GameState.Playing;
+        return gameState == GameState.Level;
+    }
+
+    public static bool IsOverworldPlaying()
+    {
+        return gameState == GameState.Overworld;
+    }
+
+    public void PlayGame()
+    {
+        m_uiManager.ToggleMainMenu();
+
+        // TODO : Remove later
+        switch (startType)
+        {
+            case StartType.Overworld: InitOverworld(); break;
+            case StartType.Level: InitLevel(); break;
+            default: break;
+        }
+    }
+
+    public void QuitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
+    public void LoadNextLevel()
+    {
+        m_uiManager.ToggleLevelMenu();
+
+        StartCoroutine("LoadNextSceneAsync");
+    }
+
+    IEnumerator LoadNextSceneAsync()
+    {
+        Debug.Log("Loading level...");
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(m_nextLevelName);
+
+        // Wait until the asynchronous scene fully loads
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        InitLevel();
+        Debug.Log("Level Loaded !");
+    }
+
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+        InitLevel();
+    }
+
+    private void EnterLevelPoint(string levelName)
+    {
+        Debug.Log("Entered level point : " + levelName + " !");
+
+        m_nextLevelName = levelName;
+
+        m_uiManager.ToggleLevelMenu();
     }
 
     private void LevelLost()

@@ -14,13 +14,13 @@ public class CameraController : MonoBehaviour
 
     [SerializeField] private float m_smoothingRate = 0.05f;
 
-    [SerializeField] private float verticalOffset = 35.0f;
-    [SerializeField] private float horizontalOffset = 25.0f;
+    [SerializeField] private float verticalOffset = 25.0f;
+    [SerializeField] private float horizontalOffset = 15.0f;
     private Vector3 m_offset;
 
     // ===================================
 
-    private void Update()
+    private void FixedUpdate()
     {
         switch (m_cameraMode)
         {
