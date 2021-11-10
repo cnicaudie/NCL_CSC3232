@@ -80,7 +80,6 @@ public class Mover : MonoBehaviour
 
             if (m_currentPlacezone == placezone)
             {
-                Debug.Log("Left current placezone");
                 m_currentPlacezone = null;
             }
         }

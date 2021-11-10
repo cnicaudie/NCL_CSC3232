@@ -36,11 +36,14 @@ public class Enemy : Entity
 
     protected override void Update()
     {
-        base.Update();
+        if (GameManager.IsGamePlaying())
+        {
+            base.Update();
 
-        UpdateTimers();
-        UpdateStates();
-        UpdateAnimatorParameters();
+            UpdateTimers();
+            UpdateStates();
+            UpdateAnimatorParameters();
+        }
     }
 
     private void UpdateTimers()
@@ -227,16 +230,12 @@ public class Enemy : Entity
 
     private void PickRandomPosition()
     {
-        Vector3 destination = transform.position;
-        Vector2 randomDirection = Random.insideUnitCircle * m_actionRange;
+        Vector3 nextDestination;
 
-        destination.x += randomDirection.x;
-        destination.z += randomDirection.y;
-
-        NavMeshHit navHit;
-        NavMesh.SamplePosition(destination, out navHit, m_actionRange, NavMesh.AllAreas);
-
-        m_agent.destination = navHit.position;
+        if (LevelManager.GetRandomPosition(transform.position, m_actionRange, out nextDestination))
+        {
+            m_agent.destination = nextDestination;
+        }
 
         m_lastPositionPickTime = 0f;
     }

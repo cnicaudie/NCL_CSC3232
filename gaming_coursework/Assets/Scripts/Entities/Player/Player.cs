@@ -23,17 +23,20 @@ public class Player : Entity
 
     protected override void Update()
     {
-        base.Update();
+        if (GameManager.IsGamePlaying())
+        {
+            base.Update();
 
-        if (m_isDamageable)
-        {
-            m_collider.material = m_defaultMaterial;
-            m_animator.SetFloat("AnimationSpeed", m_animationSpeedMultiplier);
-        }
-        else
-        {
-            m_collider.material = m_injuredMaterial;
-            m_animator.SetFloat("AnimationSpeed", m_animationSpeedMultiplier / 2f);
+            if (m_isDamageable)
+            {
+                m_collider.material = m_defaultMaterial;
+                m_animator.SetFloat("AnimationSpeed", m_animationSpeedMultiplier);
+            }
+            else
+            {
+                m_collider.material = m_injuredMaterial;
+                m_animator.SetFloat("AnimationSpeed", m_animationSpeedMultiplier / 2f);
+            }
         }
     }
 

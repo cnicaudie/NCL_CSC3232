@@ -39,33 +39,39 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        GetInputs();
+        if (GameManager.IsGamePlaying())
+        {
+            GetInputs();
+
+            SetSpeed();
+
+            if (transform.position.y < -5f)
+            {
+                transform.position = m_basePosition;
+            }
+        }
 
         UpdateAnimatorParameters();
-
-        SetSpeed();
-
-        if (transform.position.y < -5f)
-        {
-            transform.position = m_basePosition;
-        }
     }
 
     private void FixedUpdate()
     {
-        GroundCheck();
-
-        Move();
-
-        if (m_isGrounded)
+        if (GameManager.IsGamePlaying())
         {
-            if (m_jumpInput && !m_isJumping)
+            GroundCheck();
+
+            Move();
+
+            if (m_isGrounded)
             {
-                Jump();
-            }
-            else
-            {
-                m_isJumping = false;
+                if (m_jumpInput && !m_isJumping)
+                {
+                    Jump();
+                }
+                else
+                {
+                    m_isJumping = false;
+                }
             }
         }
     }

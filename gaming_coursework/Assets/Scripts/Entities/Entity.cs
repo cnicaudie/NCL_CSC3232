@@ -21,6 +21,9 @@ public class Entity : MonoBehaviour
     [SerializeField] protected float m_damageCooldown = 1.5f;
     protected float m_lastDamageTime;
 
+    public delegate void OnEntityDeath();
+    public event OnEntityDeath EntityDie;
+
     // ===================================
 
     protected virtual void Start()
@@ -32,7 +35,11 @@ public class Entity : MonoBehaviour
     protected virtual void Update()
     {
         m_lastDamageTime += Time.deltaTime;
-        m_isDamageable = m_lastDamageTime >= m_damageCooldown ? true : false;
+
+        if (m_lastDamageTime >= m_damageCooldown)
+        {
+            m_isDamageable = true;
+        }
     }
 
     public virtual void Damage(float damageAmount)
@@ -45,9 +52,17 @@ public class Entity : MonoBehaviour
         {
             m_isDead = true;
 
+            Debug.Log("Entity " + gameObject.name + " died !");
+
+            if (EntityDie != null)
+            {
+                EntityDie();
+            }
+
             Destroy(gameObject, 5f);
         }
 
         m_lastDamageTime = 0f;
+        m_isDamageable = false;
     }
 }

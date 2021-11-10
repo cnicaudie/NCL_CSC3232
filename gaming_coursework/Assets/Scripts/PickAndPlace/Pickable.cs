@@ -18,6 +18,9 @@ public class Pickable : MonoBehaviour
         get { return m_wasThrown; }
     }
 
+    public delegate void OnPickableDestroy();
+    public event OnPickableDestroy DestroyPickable;
+
     // ===================================
 
     private void Start()
@@ -29,6 +32,11 @@ public class Pickable : MonoBehaviour
     {
         if (transform.position.y < -5f)
         {
+            if (DestroyPickable != null)
+            {
+                DestroyPickable();
+            }
+
             Destroy(gameObject);
         }
     }

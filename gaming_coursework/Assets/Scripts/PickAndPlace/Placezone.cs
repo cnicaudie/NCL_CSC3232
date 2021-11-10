@@ -11,6 +11,12 @@ public class Placezone : MonoBehaviour
         get { return m_isAvailable; }
     }
 
+    public delegate void OnPlacezoneUse();
+    public event OnPlacezoneUse UsePlacezone;
+
+    public delegate void OnPlacezoneFree();
+    public event OnPlacezoneFree FreePlacezone;
+
     // ===================================
 
     private void Start()
@@ -22,12 +28,22 @@ public class Placezone : MonoBehaviour
     {
         m_isAvailable = false;
         SetColor();
+
+        if (UsePlacezone != null)
+        {
+            UsePlacezone();
+        }
     }
 
     public void Free()
     {
         m_isAvailable = true;
         SetColor();
+
+        if (FreePlacezone != null)
+        {
+            FreePlacezone();
+        }
     }
 
     private void SetColor()
