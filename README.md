@@ -1,6 +1,16 @@
+
 # NCL_CSC3232
 
 Coursework project for the Gaming Technologies and Simulations module.
+
+## Launch project
+
+### From Unity :
+- Open the project folder named **"gaming_coursework"** in Unity with version **2021.1.21f1** ;
+- Open the Unity Scene called **"OverworldScene"** in the Editor (located in Assets/Scenes) ;
+- Press Play.
+
+**/!\ IMPORTANT NOTE /!\ : if you start playing the project from another scene, you might experience unwanted behaviours.**
 
 ## Pitch
 
