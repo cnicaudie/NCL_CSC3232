@@ -62,16 +62,22 @@ public class GameManager : MonoBehaviour
 
     private void InitOverworld()
     {
+        Debug.Log("Initializing Overworld...");
+
         gameState = GameState.Overworld;
 
         m_camera = FindObjectOfType<CameraController>();
 
         m_spaceship = FindObjectOfType<Spaceship>();
         m_spaceship.EnterLevelPoint += EnterLevelPoint;
+
+        Debug.Log("Overworld initialized !");
     }
 
     private void InitLevel()
     {
+        Debug.Log("Initializing Level...");
+
         gameState = GameState.Level;
 
         m_camera = FindObjectOfType<CameraController>();
@@ -82,6 +88,8 @@ public class GameManager : MonoBehaviour
 
         m_player = FindObjectOfType<Player>();
         m_player.EntityDie += LevelLost;
+
+        Debug.Log("Level initialized !");
     }
 
     public static bool IsGamePlaying()
@@ -116,17 +124,31 @@ public class GameManager : MonoBehaviour
 #endif
     }
 
+    public void GoToOverworld()
+    {
+        m_uiManager.ToggleEndLevelMenu();
+
+        StartCoroutine(LoadNextSceneAsync("OverworldScene", false));
+    }
+
     public void LoadNextLevel()
     {
         m_uiManager.ToggleLevelMenu();
 
-        StartCoroutine("LoadNextSceneAsync");
+        StartCoroutine(LoadNextSceneAsync(m_nextLevelName, true));
     }
 
-    IEnumerator LoadNextSceneAsync()
+    public void RestartLevel()
     {
-        Debug.Log("Loading level...");
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(m_nextLevelName);
+        m_uiManager.ToggleEndLevelMenu();
+
+        StartCoroutine(LoadNextSceneAsync(m_nextLevelName, true));
+    }
+
+    IEnumerator LoadNextSceneAsync(string sceneName, bool isLevel)
+    {
+        Debug.Log("Loading scene...");
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
 
         // Wait until the asynchronous scene fully loads
         while (!asyncLoad.isDone)
@@ -134,15 +156,16 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
 
-        InitLevel();
-        Debug.Log("Level Loaded !");
-    }
+        Debug.Log("Scene Loaded !");
 
-    public void RestartLevel()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-
-        InitLevel();
+        if (isLevel)
+        {
+            InitLevel();
+        }
+        else
+        {
+            InitOverworld();
+        }
     }
 
     private void EnterLevelPoint(string levelName)
@@ -161,6 +184,8 @@ public class GameManager : MonoBehaviour
         gameState = GameState.Menu;
 
         m_camera.SetCameraMode(CameraController.CameraMode.Menu);
+
+        m_uiManager.ToggleLoseLevelMenu();
     }
 
     private void LevelWon()
@@ -170,5 +195,7 @@ public class GameManager : MonoBehaviour
         gameState = GameState.Menu;
 
         m_camera.SetCameraMode(CameraController.CameraMode.Menu);
+
+        m_uiManager.ToggleWinLevelMenu();
     }
 }

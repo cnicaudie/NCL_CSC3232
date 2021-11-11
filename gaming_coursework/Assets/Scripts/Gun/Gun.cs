@@ -23,13 +23,16 @@ public class Gun : MonoBehaviour
 
     private void Update()
     {
-        m_cooldownSpeed += Time.deltaTime;
-    
-        if (Input.GetButton("Fire1"))
+        if (GameManager.IsGamePlaying())
         {
-            if ((m_infiniteAmmos || m_ammunitions > 0) && m_cooldownSpeed > m_shootRate)
+            m_cooldownSpeed += Time.deltaTime;
+    
+            if (Input.GetButton("Fire1"))
             {
-                Shoot();
+                if ((m_infiniteAmmos || m_ammunitions > 0) && m_cooldownSpeed > m_shootRate)
+                {
+                    Shoot();
+                }
             }
         }
     }

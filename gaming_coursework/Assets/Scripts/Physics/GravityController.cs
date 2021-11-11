@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class GravityController : MonoBehaviour
 {
-    private PlanetGravitation m_planet;
+    [SerializeField] private PlanetGravitation m_planet;
     public PlanetGravitation Planet
     {
         get { return m_planet; }

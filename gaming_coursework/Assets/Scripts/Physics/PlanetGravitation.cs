@@ -18,6 +18,12 @@ public class PlanetGravitation : MonoBehaviour
 
     // ===================================
 
+    private void Start()
+    {
+        s_isSpaceshipInOrbit = false;
+        m_isSpaceshipInThisOrbit = false;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Spaceship") && !s_isSpaceshipInOrbit)
