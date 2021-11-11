@@ -2,10 +2,20 @@ using UnityEngine;
 using UnityEngine.AI;
 
 /// <summary>
-/// Handles AI enemy state-based behaviours
+/// Handles AI enemy state-based (using Hierarchical State Machine) behaviours
 /// </summary>
 public class Enemy : Entity
 {
+    // Hierarchical State Machine enumerations
+
+    // Note : enums are not the most practical way of doing FSM/HSM
+    //        but it was easier to implement with the short time allowed
+
+    public enum EnemySuperState
+    {
+        Patrol, Offense, Damaged
+    }
+
     public enum EnemyState
     {
         Idle, Walk, Chase, Attack, Hide, Dizzy, Hit, Dead
@@ -15,6 +25,7 @@ public class Enemy : Entity
     // ATTRIBUTES
     // ===================================
 
+    [SerializeField] private EnemySuperState m_superState;
     [SerializeField] private EnemyState m_state;
 
     private Animator m_animator;
@@ -52,15 +63,15 @@ public class Enemy : Entity
         // Compute next state
         if (m_isDead)
         {
-            m_state = EnemyState.Dead;
+            SetState(EnemyState.Dead);
         }
         else if (wasShot)
         {
-            m_state = EnemyState.Hit;
+            SetState(EnemyState.Hit);
         }
         else
         {
-            m_state = EnemyState.Dizzy;
+            SetState(EnemyState.Dizzy);
         }
     }
 
@@ -82,7 +93,7 @@ public class Enemy : Entity
         m_hidespots = GameObject.FindGameObjectsWithTag("Hidespot");
         m_player = FindObjectOfType<Player>();
 
-        m_state = EnemyState.Idle;
+        SetState(EnemyState.Idle);
     }
 
     protected override void Update()
@@ -92,16 +103,15 @@ public class Enemy : Entity
             base.Update();
 
             UpdateTimers();
-            UpdateStates();
+            UpdateCurrentState();
             UpdateAnimatorParameters();
+            ComputeNextState();
         }
     }
 
     // ===================================
     // PRIVATE METHODS
     // ===================================
-
-    #region UPDATE_ENEMY
 
     private void UpdateTimers()
     {
@@ -118,124 +128,196 @@ public class Enemy : Entity
     }
 
     /// <summary>
-    /// State-based update behaviour
+    /// Updates enemy's behaviour based on its state
     /// </summary>
-    private void UpdateStates()
+    private void UpdateCurrentState()
     {
-        switch (m_state)
+        switch (m_superState)
         {
-            case EnemyState.Idle: Idle(); break;
+            case EnemySuperState.Patrol:
+            {
+                switch (m_state)
+                {
+                    case EnemyState.Idle: StopAgent(true); break;
 
-            case EnemyState.Walk: Walk(); break;
+                    case EnemyState.Walk: Walk(); break;
 
-            case EnemyState.Chase: Chase(); break;
+                    default:
+                        StopAgent(true);
+                        break;
+                }
+                break;
+            }
 
-            case EnemyState.Attack: Attack(); break;
+            case EnemySuperState.Offense:
+            {
+                switch (m_state)
+                {
+                    case EnemyState.Chase: Chase(); break;
 
-            case EnemyState.Hide: Hide(); break;
+                    case EnemyState.Attack: Attack(); break;
 
-            case EnemyState.Dizzy: Dizzy(); break;
+                    case EnemyState.Hide: StopAgent(false); break;
 
-            case EnemyState.Hit: Hit(); break;
+                    default:
+                        StopAgent(true);
+                        break;
+                }
+                break;
+            }
+
+            case EnemySuperState.Damaged:
+            {
+                StopAgent(true);
+                break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Computes next state based on current state and environment
+    /// </summary>
+    private void ComputeNextState()
+    {
+        switch (m_superState)
+        {
+            case EnemySuperState.Patrol:
+            {
+                if (Vector3.Distance(transform.position, m_player.transform.position) < m_actionRange)
+                {
+                    SetState(EnemyState.Chase);
+                    break;
+                }
+
+                switch (m_state)
+                {
+                    case EnemyState.Idle:
+                        if (m_lastPositionPickTime >= m_pickNewPositionCooldown)
+                        {
+                            SetState(EnemyState.Walk);
+                        }
+                        break;
+
+                    case EnemyState.Walk:
+                        if (m_agent.remainingDistance < m_distanceThreshold && m_lastPositionPickTime < m_pickNewPositionCooldown)
+                        {
+                            SetState(EnemyState.Idle);
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+
+                break;
+            }
+
+            case EnemySuperState.Offense:
+            {
+                if (m_state == EnemyState.Hide)
+                {
+                    if (m_agent.remainingDistance < m_distanceThreshold)
+                    {
+                        SetState(EnemyState.Idle);
+                    }
+                }
+                else if (Vector3.Distance(transform.position, m_player.transform.position) > m_actionRange)
+                {
+                    SetState(EnemyState.Idle);
+                }
+                break;
+            }
+
+            case EnemySuperState.Damaged:
+            {
+                switch (m_state)
+                {
+                    case EnemyState.Dizzy:
+                        if (m_lastDamageTime >= m_dizzyCooldown)
+                        {
+                            SetState(EnemyState.Idle);
+                        }
+                        break;
+
+                    case EnemyState.Hit:
+                        if (m_lastDamageTime >= m_damageCooldown)
+                        {
+                            SetState(EnemyState.Idle);
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+                break;
+            }
 
             default:
-                m_agent.isStopped = true;
                 break;
         }
     }
 
-    #endregion // UPDATE_ENEMY
-
-    #region ENEMY_STATES
-
-    private void Idle()
+    /// <summary>
+    /// Sets new state and superstate
+    /// </summary>
+    /// <param name="state"></param>
+    private void SetState(EnemyState state)
     {
-        if (!m_agent.isStopped)
-            m_agent.isStopped = true;
+        m_state = state;
 
-        if (m_lastPositionPickTime >= m_pickNewPositionCooldown)
+        if (state == EnemyState.Idle || state == EnemyState.Walk)
         {
-            m_state = EnemyState.Walk;
+            m_superState = EnemySuperState.Patrol;
+        }
+        else if (state == EnemyState.Chase || state == EnemyState.Attack || state == EnemyState.Hide)
+        {
+            m_superState = EnemySuperState.Offense;
+        }
+        else if (state == EnemyState.Dizzy || state == EnemyState.Hit || state == EnemyState.Dead)
+        {
+            m_superState = EnemySuperState.Damaged;
+        }
+    }
+
+    /// <summary>
+    /// Start/Stop the NavMeshAgent
+    /// </summary>
+    /// <param name="isStopped"></param>
+    private void StopAgent(bool isStopped)
+    {
+        if (m_agent.isStopped != isStopped)
+        {
+            m_agent.isStopped = isStopped;
         }
     }
 
     private void Walk()
     {
-        if (m_agent.isStopped)
-            m_agent.isStopped = false;
+        StopAgent(false);
 
-        if (Vector3.Distance(transform.position, m_player.transform.position) < m_actionRange)
+        if (m_agent.remainingDistance < m_distanceThreshold && m_lastPositionPickTime >= m_pickNewPositionCooldown)
         {
-            m_state = EnemyState.Chase;
-        }
-        else if (m_agent.remainingDistance < m_distanceThreshold)
-        {
-            if (m_lastPositionPickTime < m_pickNewPositionCooldown)
-            {
-                m_state = EnemyState.Idle;
-            }
-            else
-            {
-                PickRandomPosition();
-            }
+            PickRandomPosition();
         }
     }
 
     private void Chase()
     {
-        if (Vector3.Distance(transform.position, m_player.transform.position) > m_actionRange)
-        {
-            m_state = EnemyState.Idle;
-        }
-        else
-        {
-            m_agent.destination = m_player.transform.position;
-        }
+        StopAgent(false);
+
+        m_agent.destination = m_player.transform.position;
     }
 
     private void Attack()
     {
-        if (!m_agent.isStopped)
-            m_agent.isStopped = true;
+        StopAgent(true);
 
         transform.LookAt(m_player.transform);
     }
 
-    private void Hide()
-    {
-        if (m_agent.isStopped)
-            m_agent.isStopped = false;
-
-        if (m_agent.remainingDistance < m_distanceThreshold)
-        {
-            m_state = EnemyState.Idle;
-        }
-    }
-
-    private void Dizzy()
-    {
-        if (!m_agent.isStopped)
-            m_agent.isStopped = true;
-
-        if (m_lastDamageTime >= m_dizzyCooldown)
-        {
-            m_state = EnemyState.Idle;
-        }
-    }
-
-    private void Hit()
-    {
-        if (!m_agent.isStopped)
-            m_agent.isStopped = true;
-
-        if (m_lastDamageTime >= m_damageCooldown)
-        {
-            m_state = EnemyState.Idle;
-        }
-    }
-
-    #endregion // ENEMY_STATES
-
+    /// <summary>
+    /// Picks a random position from the level map as a new destination
+    /// </summary>
     private void PickRandomPosition()
     {
         Vector3 nextDestination;
@@ -248,6 +330,9 @@ public class Enemy : Entity
         m_lastPositionPickTime = 0f;
     }
 
+    /// <summary>
+    /// Picks a random hidespot to hide from the player
+    /// </summary>
     private void PickRandomHidespot()
     {
         if (m_hidespots.Length > 0)
@@ -268,7 +353,7 @@ public class Enemy : Entity
     {
         if (other.gameObject.CompareTag("Player") && m_state == EnemyState.Chase)
         {
-            m_state = EnemyState.Attack;
+            SetState(EnemyState.Attack);
         }
     }
 
@@ -280,7 +365,7 @@ public class Enemy : Entity
         if (other.gameObject.CompareTag("Player") && m_state == EnemyState.Attack)
         {
             PickRandomHidespot();
-            m_state = EnemyState.Hide;
+            SetState(EnemyState.Hide);
         }
     }
 
