@@ -9,6 +9,8 @@ public class Player : Entity
     // ATTRIBUTES
     // ===================================
 
+    private Vector3 m_basePosition;
+
     private Animator m_animator;
 
     // Dynamic change of physic material properties
@@ -23,6 +25,8 @@ public class Player : Entity
 
     private float m_animationSpeedMultiplier = 1f;
 
+    private float m_fallDamage = 20f;
+
     // ===================================
 
     // ===================================
@@ -33,10 +37,11 @@ public class Player : Entity
     {
         base.Start();
 
+        m_basePosition = transform.position;
         m_animator = GetComponent<Animator>();
+        m_animator.SetFloat("AnimationSpeed", m_animationSpeedMultiplier);
         m_rigidbody = GetComponent<Rigidbody>();
         m_collider = GetComponent<CapsuleCollider>();
-        m_animator.SetFloat("AnimationSpeed", m_animationSpeedMultiplier);
     }
 
     protected override void Update()
@@ -58,6 +63,13 @@ public class Player : Entity
                 m_collider.material = m_injuredMaterial;
                 m_rigidbody.mass = m_injuredMass;
                 m_animator.SetFloat("AnimationSpeed", m_animationSpeedMultiplier / 2f);
+            }
+
+            // Check if player falls off the ground
+            if (transform.position.y < -5f)
+            {
+                Damage(m_fallDamage);
+                transform.position = m_basePosition;
             }
         }
     }
