@@ -3,20 +3,30 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Ground
+  - LevelPoint
+  - Pickable
+  - Placezone
+  - Spaceship
+  - Obstacle
+  - Bullet
+  - Trampoline
+  - PickUpZone
+  - Hidespot
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Planet
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Overworld
+  - Player
+  - Pickable
+  - Bullet
+  - PlayerWalkable
+  - Enemy
   - 
   - 
   - 
