@@ -1,8 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Handles player's mover behaviour (ability to pick/move/store/throw objects)
+/// </summary>
 public class Mover : MonoBehaviour
 {
+    // ===================================
+    // ATTRIBUTES
+    // ===================================
+
     [SerializeField] private Transform m_pickUpLocation;
 
     private Placezone m_currentPlacezone;
@@ -12,6 +19,10 @@ public class Mover : MonoBehaviour
     private float m_throwForce = 20f;
     private bool m_hasPickedUpObject;
 
+    // ===================================
+
+    // ===================================
+    // PRIVATE METHODS
     // ===================================
 
     private void Start()
@@ -51,6 +62,9 @@ public class Mover : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Trigger enter response and feedback
+    /// </summary>
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Pickable") && !m_hasPickedUpObject)
@@ -68,6 +82,9 @@ public class Mover : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Trigger exit response and feedback
+    /// </summary>
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Pickable"))
@@ -85,6 +102,9 @@ public class Mover : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Picks the closest object in pick up area range
+    /// </summary>
     private void PickUpObject()
     {
         if (m_objectsInArea.Count > 0)
@@ -107,6 +127,9 @@ public class Mover : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Lets the object fall back on the ground
+    /// </summary>
     private void LetGoObject()
     {
         if (m_currentPickUpObject != null)
@@ -117,6 +140,9 @@ public class Mover : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Throw object in forward direction
+    /// </summary>
     private void ThrowObject()
     {
         if (m_currentPickUpObject != null)
@@ -127,6 +153,9 @@ public class Mover : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Place the object in placezone in pick up area range
+    /// </summary>
     private void PlaceObject()
     {
         if (m_currentPlacezone.IsAvailable)

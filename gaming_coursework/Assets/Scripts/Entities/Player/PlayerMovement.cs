@@ -1,7 +1,14 @@
 using UnityEngine;
 
+/// <summary>
+/// Handles player movement based on inputs
+/// </summary>
 public class PlayerMovement : MonoBehaviour
 {
+    // ===================================
+    // ATTRIBUTES
+    // ===================================
+
     private Rigidbody m_rigidbody;
     private Animator m_animator;
 
@@ -30,6 +37,10 @@ public class PlayerMovement : MonoBehaviour
 
     // ===================================
 
+    // ===================================
+    // PRIVATE METHODS
+    // ===================================
+
     private void Start()
     {
         m_rigidbody = GetComponent<Rigidbody>();
@@ -37,6 +48,9 @@ public class PlayerMovement : MonoBehaviour
         m_basePosition = transform.position;
     }
 
+    /// <summary>
+    /// Non physics-based update
+    /// </summary>
     private void Update()
     {
         if (GameManager.IsGamePlaying())
@@ -54,6 +68,28 @@ public class PlayerMovement : MonoBehaviour
         UpdateAnimatorParameters();
     }
 
+    private void GetInputs()
+    {
+        m_horizontalInput = Input.GetAxis("Horizontal");
+        m_verticalInput = Input.GetAxis("Vertical");
+        m_jumpInput = Input.GetButton("Jump");
+    }
+
+    private void SetSpeed()
+    {
+        m_speed = m_isGrounded ? m_defaultSpeed : m_airSpeed;
+    }
+
+    private void UpdateAnimatorParameters()
+    {
+        m_animator.SetFloat("Speed", m_rigidbody.velocity.magnitude);
+        m_animator.SetBool("IsJumping", m_isJumping);
+        m_animator.SetBool("IsGrounded", m_isGrounded);
+    }
+
+    /// <summary>
+    /// Physics-based movements update
+    /// </summary>
     private void FixedUpdate()
     {
         if (GameManager.IsGamePlaying())
@@ -76,40 +112,9 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, m_groundCheckRadius);
-    }
-
-    private void GetInputs()
-    {
-        m_horizontalInput = Input.GetAxis("Horizontal");
-        m_verticalInput = Input.GetAxis("Vertical");
-        m_jumpInput = Input.GetButton("Jump");
-    }
-
-    private void UpdateAnimatorParameters()
-    {
-        m_animator.SetFloat("Speed", m_rigidbody.velocity.magnitude);
-        m_animator.SetBool("IsJumping", m_isJumping);
-        m_animator.SetBool("IsGrounded", m_isGrounded);
-    }
-
     private void GroundCheck()
     {
         m_isGrounded = Physics.CheckSphere(transform.position, m_groundCheckRadius, m_groundLayer);
-    }
-
-    private void SetSpeed()
-    {
-        m_speed = m_isGrounded ? m_defaultSpeed : m_airSpeed;
-    }
-
-    private void SlowdownVelocity()
-    {
-        m_rigidbody.velocity *= m_slowdownFactor;
-        m_rigidbody.angularVelocity *= m_slowdownFactor;
     }
 
     private void Move()
@@ -132,6 +137,12 @@ public class PlayerMovement : MonoBehaviour
         m_rigidbody.velocity = m_rigidbody.velocity + (moveDirection * m_speed * Time.fixedDeltaTime);
     }
 
+    private void SlowdownVelocity()
+    {
+        m_rigidbody.velocity *= m_slowdownFactor;
+        m_rigidbody.angularVelocity *= m_slowdownFactor;
+    }
+
     private void Rotate(Vector3 moveDirection)
     {
         float facingAngle = Mathf.Atan2(moveDirection.x, moveDirection.z) * Mathf.Rad2Deg;
@@ -147,5 +158,15 @@ public class PlayerMovement : MonoBehaviour
     {
         m_isJumping = true;
         m_rigidbody.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
+    }
+
+    /// <summary>
+    /// Debugging gizmos
+    /// </summary>
+    private void OnDrawGizmosSelected()
+    {
+        // Ground check
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, m_groundCheckRadius);
     }
 }

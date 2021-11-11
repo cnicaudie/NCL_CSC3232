@@ -2,8 +2,22 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Manage the game in its globality (states / UI / win / lose)
+/// </summary>
 public class GameManager : MonoBehaviour
 {
+    public enum GameState
+    {
+        Menu, Overworld, Level
+    }
+
+    // ===================================
+    // ATTRIBUTES
+    // ===================================
+
+    public static GameState s_gameState;
+
     private UIManager m_uiManager;
     private CameraController m_camera;
 
@@ -12,12 +26,6 @@ public class GameManager : MonoBehaviour
     
     private Player m_player;
     private Spaceship m_spaceship;
-
-    public enum GameState
-    {
-        Menu, Overworld, Level
-    }
-    public static GameState gameState;
 
     // TODO : Debug tool, remove later
     public enum StartType
@@ -28,78 +36,18 @@ public class GameManager : MonoBehaviour
 
     // ===================================
 
-    private void Awake()
-    {
-        GameManager[] gameManagers = FindObjectsOfType<GameManager>();
-
-        if (gameManagers.Length > 1)
-        {
-            Destroy(gameObject);
-        }
-
-        DontDestroyOnLoad(gameObject);
-    }
-
-    private void Start()
-    {
-        // TODO : Remove later
-        switch (startType)
-        {
-            case StartType.Overworld:
-                m_uiManager = FindObjectOfType<UIManager>();
-                m_camera = FindObjectOfType<CameraController>();
-                gameState = GameState.Menu;
-                break;
-
-            case StartType.Level:
-                InitLevel();
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    private void InitOverworld()
-    {
-        Debug.Log("Initializing Overworld...");
-
-        gameState = GameState.Overworld;
-
-        m_camera = FindObjectOfType<CameraController>();
-
-        m_spaceship = FindObjectOfType<Spaceship>();
-        m_spaceship.EnterLevelPoint += EnterLevelPoint;
-
-        Debug.Log("Overworld initialized !");
-    }
-
-    private void InitLevel()
-    {
-        Debug.Log("Initializing Level...");
-
-        gameState = GameState.Level;
-
-        m_camera = FindObjectOfType<CameraController>();
-
-        m_levelManager = FindObjectOfType<LevelManager>();
-        m_levelManager.LevelWon += LevelWon;
-        m_levelManager.LevelLost += LevelLost;
-
-        m_player = FindObjectOfType<Player>();
-        m_player.EntityDie += LevelLost;
-
-        Debug.Log("Level initialized !");
-    }
+    // ===================================
+    // PUBLIC METHODS
+    // ===================================
 
     public static bool IsGamePlaying()
     {
-        return gameState == GameState.Level;
+        return s_gameState == GameState.Level;
     }
 
     public static bool IsOverworldPlaying()
     {
-        return gameState == GameState.Overworld;
+        return s_gameState == GameState.Overworld;
     }
 
     public void PlayGame()
@@ -145,9 +93,81 @@ public class GameManager : MonoBehaviour
         StartCoroutine(LoadNextSceneAsync(m_nextLevelName, true));
     }
 
-    IEnumerator LoadNextSceneAsync(string sceneName, bool isLevel)
+    // ===================================
+    // PRIVATE METHODS
+    // ===================================
+
+    /// <summary>
+    /// Makes the GameManager a "Don't Destroy On Load" object (singleton)
+    /// </summary>
+    private void Awake()
+    {
+        GameManager[] gameManagers = FindObjectsOfType<GameManager>();
+
+        if (gameManagers.Length > 1)
+        {
+            Destroy(gameObject);
+        }
+
+        DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
+        // TODO : Remove later
+        switch (startType)
+        {
+            case StartType.Overworld:
+                m_uiManager = FindObjectOfType<UIManager>();
+                m_camera = FindObjectOfType<CameraController>();
+                s_gameState = GameState.Menu;
+                break;
+
+            case StartType.Level:
+                InitLevel();
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void InitOverworld()
+    {
+        Debug.Log("Initializing Overworld...");
+
+        s_gameState = GameState.Overworld;
+
+        m_camera = FindObjectOfType<CameraController>();
+
+        m_spaceship = FindObjectOfType<Spaceship>();
+        m_spaceship.EnterLevelPoint += EnterLevelPoint;
+
+        Debug.Log("Overworld initialized !");
+    }
+
+    private void InitLevel()
+    {
+        Debug.Log("Initializing Level...");
+
+        s_gameState = GameState.Level;
+
+        m_camera = FindObjectOfType<CameraController>();
+
+        m_levelManager = FindObjectOfType<LevelManager>();
+        m_levelManager.LevelWon += LevelWon;
+        m_levelManager.LevelLost += LevelLost;
+
+        m_player = FindObjectOfType<Player>();
+        m_player.EntityDie += LevelLost;
+
+        Debug.Log("Level initialized !");
+    }
+
+    private IEnumerator LoadNextSceneAsync(string sceneName, bool isLevel)
     {
         Debug.Log("Loading scene...");
+
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
 
         // Wait until the asynchronous scene fully loads
@@ -173,7 +193,6 @@ public class GameManager : MonoBehaviour
         Debug.Log("Entered level point : " + levelName + " !");
 
         m_nextLevelName = levelName;
-
         m_uiManager.ToggleLevelMenu();
     }
 
@@ -181,10 +200,8 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Level Lost !");
 
-        gameState = GameState.Menu;
-
+        s_gameState = GameState.Menu;
         m_camera.SetCameraMode(CameraController.CameraMode.Menu);
-
         m_uiManager.ToggleLoseLevelMenu();
     }
 
@@ -192,10 +209,8 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Level Won !");
 
-        gameState = GameState.Menu;
-
+        s_gameState = GameState.Menu;
         m_camera.SetCameraMode(CameraController.CameraMode.Menu);
-
         m_uiManager.ToggleWinLevelMenu();
     }
 }

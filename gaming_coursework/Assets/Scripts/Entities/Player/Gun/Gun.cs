@@ -1,7 +1,14 @@
 using UnityEngine;
 
+/// <summary>
+/// Handles Gun behaviour
+/// </summary>
 public class Gun : MonoBehaviour
 {
+    // ===================================
+    // ATTRIBUTES
+    // ===================================
+
     [SerializeField] private GameObject m_bullet;
 
     [SerializeField] private Transform m_shootPoint;
@@ -16,9 +23,10 @@ public class Gun : MonoBehaviour
 
     private float m_range = 100f;
 
-    //public delegate void UpdateBulletValue();
-    //public event UpdateBulletValue OnBulletNumberChange;
+    // ===================================
 
+    // ===================================
+    // PRIVATE METHODS
     // ===================================
 
     private void Update()
@@ -34,24 +42,6 @@ public class Gun : MonoBehaviour
                     Shoot();
                 }
             }
-        }
-    }
-
-    public int GetAmmunitionCount()
-    {
-        return m_ammunitions;
-    }
-
-    private void AddAmmunition()
-    {
-        if (m_ammunitions < k_maxAmmunitions)
-        {
-            m_ammunitions += 1;
-
-            /*if (OnBulletNumberChange != null)
-            {
-                OnBulletNumberChange();
-            }*/
         }
     }
 
@@ -72,10 +62,5 @@ public class Gun : MonoBehaviour
         Vector3 hitPoint = m_shootPoint.position + m_shootPoint.forward * m_range;
 
         InstantiateBullet(hitPoint);
-
-        /*if (OnBulletNumberChange != null)
-        {
-            OnBulletNumberChange();
-        }*/
     }
 }

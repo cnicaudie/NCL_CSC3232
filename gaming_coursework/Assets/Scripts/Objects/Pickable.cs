@@ -1,8 +1,15 @@
 using UnityEngine;
 
+/// <summary>
+/// Handles pickable object behaviour
+/// </summary>
 [RequireComponent(typeof(Rigidbody))]
 public class Pickable : MonoBehaviour
 {
+    // ===================================
+    // ATTRIBUTES
+    // ===================================
+
     private Rigidbody m_rigidbody;
     private Placezone m_currentPlacezone;
 
@@ -23,6 +30,51 @@ public class Pickable : MonoBehaviour
 
     // ===================================
 
+    // ===================================
+    // PUBLIC METHODS
+    // ===================================
+
+    public void Place(Placezone placezone)
+    {
+        m_isPlaced = true;
+
+        m_currentPlacezone = placezone;
+        m_currentPlacezone.Use();
+
+        // Place object in placezone
+        transform.position = m_currentPlacezone.transform.position;
+        transform.rotation = m_currentPlacezone.transform.rotation;
+
+        // Freeze it so that it doesn't get moved around
+        m_rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+    }
+
+    public void Unplace()
+    {
+        m_isPlaced = false;
+
+        m_currentPlacezone.Free();
+        m_currentPlacezone = null;
+
+        // Unfreeze the object
+        m_rigidbody.constraints = RigidbodyConstraints.None;
+    }
+
+    /// <summary>
+    /// Physics-based throw
+    /// </summary>
+    /// <param name="force"></param>
+    public void Throw(Vector3 force)
+    {
+        m_rigidbody.useGravity = true;
+        m_rigidbody.AddForce(force, ForceMode.Impulse);
+        m_wasThrown = true;
+    }
+
+    // ===================================
+    // PRIVATE METHODS
+    // ===================================
+
     private void Start()
     {
         m_rigidbody = GetComponent<Rigidbody>();
@@ -41,48 +93,15 @@ public class Pickable : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Collision response and feedback
+    /// </summary>
+    /// <param name="collision"></param>
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground") && m_wasThrown)
         {
             m_wasThrown = false;
         }
-    }
-
-    public void Place(Placezone placezone)
-    {
-        m_isPlaced = true;
-
-        m_currentPlacezone = placezone;
-        m_currentPlacezone.Use();
-
-        // Place object in placezone
-        transform.position = m_currentPlacezone.transform.position;
-        transform.rotation = m_currentPlacezone.transform.rotation;
-
-        // Freeze it so that it doesn't get moved around
-        m_rigidbody.constraints = RigidbodyConstraints.FreezeAll;
-
-        Debug.Log("Placed object");
-    }
-
-    public void Unplace()
-    {
-        m_isPlaced = false;
-
-        m_currentPlacezone.Free();
-        m_currentPlacezone = null;
-
-        // Unfreeze the object
-        m_rigidbody.constraints = RigidbodyConstraints.None;
-
-        Debug.Log("Unplaced object");
-    }
-
-    public void Throw(Vector3 force)
-    {
-        m_rigidbody.useGravity = true;
-        m_rigidbody.AddForce(force, ForceMode.Impulse);
-        m_wasThrown = true;
     }
 }

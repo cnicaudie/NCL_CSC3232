@@ -1,7 +1,14 @@
 using UnityEngine;
 
+/// <summary>
+/// Handles enter/exit of object in planet's orbit
+/// </summary>
 public class PlanetGravitation : MonoBehaviour
 {
+    // ===================================
+    // ATTRIBUTES
+    // ===================================
+
     [SerializeField] private float m_gravity = -20f;
     public float Gravity
     {
@@ -18,14 +25,38 @@ public class PlanetGravitation : MonoBehaviour
 
     // ===================================
 
+    // ===================================
+    // PUBLIC METHODS
+    // ===================================
+
+    /// <summary>
+    /// Retrieves the planet's orbit height
+    /// </summary>
+    /// <returns></returns>
+    public int GetOrbitHeight()
+    {
+        var orbitBound = GetComponent<SphereCollider>().radius * transform.lossyScale.y;
+        var planetBound = transform.parent.GetComponent<SphereCollider>().radius * transform.parent.lossyScale.y;
+        var orbitSize = orbitBound - planetBound;
+        return Mathf.RoundToInt(orbitSize);
+    }
+
+    // ===================================
+    // PRIVATE METHODS
+    // ===================================
+
     private void Start()
     {
         s_isSpaceshipInOrbit = false;
         m_isSpaceshipInThisOrbit = false;
     }
 
+    /// <summary>
+    /// Trigger enter response and feedback
+    /// </summary>
     private void OnTriggerEnter(Collider other)
     {
+        // Spaceship enters this orbit
         if (other.gameObject.CompareTag("Spaceship") && !s_isSpaceshipInOrbit)
         {
             s_isSpaceshipInOrbit = true;
@@ -42,8 +73,12 @@ public class PlanetGravitation : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Trigger exit response and feedback
+    /// </summary>
     private void OnTriggerExit(Collider other)
     {
+        // Spaceship exits this orbit
         if (other.gameObject.CompareTag("Spaceship") && m_isSpaceshipInThisOrbit)
         {
             s_isSpaceshipInOrbit = false;
@@ -51,16 +86,5 @@ public class PlanetGravitation : MonoBehaviour
 
             Debug.Log(transform.name + " orbit exited !");
         }
-    }
-
-    public int GetOrbitHeight()
-    {
-        var orbitBound = GetComponent<SphereCollider>().radius * transform.lossyScale.y;
-        var planetBound = transform.parent.GetComponent<SphereCollider>().radius * transform.parent.lossyScale.y;
-        var orbitSize = orbitBound - planetBound;
-
-        Debug.Log("Orbit's height : " + orbitSize);
-
-        return Mathf.RoundToInt(orbitSize);
     }
 }

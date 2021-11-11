@@ -1,8 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Handles the spaceship's behaviour with Newtonian physics
+/// </summary>
 public class Spaceship : MonoBehaviour
 {
+    // ===================================
+    // ATTRIBUTES
+    // ===================================
+
     private Rigidbody m_rigidbody;
     private ParticleSystem m_thrustParticles;
     
@@ -29,50 +36,9 @@ public class Spaceship : MonoBehaviour
 
     // ===================================
 
-    private void Start()
-    {
-        m_rigidbody = GetComponent<Rigidbody>();
-
-        m_thrustParticles = GetComponentInChildren<ParticleSystem>();
-        EnableParticles(false);
-    }
-
-    private void Update()
-    {
-        if (GameManager.IsOverworldPlaying())
-        {
-            GetInputs();
-            SetParticlesSpeed();
-        }
-    }
-
-    private void FixedUpdate()
-    {
-        if (GameManager.IsOverworldPlaying())
-        {
-            if (m_isHovering)
-            {
-                Hover();
-                ApplyThrust();
-                ApplyRotation();
-            }
-
-            SlowdownVelocity();
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("LevelPoint") && !m_isHovering)
-        {
-            LevelPoint levelPoint = other.gameObject.GetComponent<LevelPoint>();
-
-            if (EnterLevelPoint != null && levelPoint != null)
-            {
-                EnterLevelPoint(levelPoint.levelName);
-            }
-        }
-    }
+    // ===================================
+    // PUBLIC METHODS
+    // ===================================
 
     public void EnterNewOrbit(int orbitHeight)
     {
@@ -81,6 +47,36 @@ public class Spaceship : MonoBehaviour
         m_hoverHeightMin = orbitHeight / 2f;
         m_hoverHeightMax = m_hoverHeightMin + orbitHeight;
         m_hoverTargetHeight = m_hoverHeightMin;
+    }
+
+    // ===================================
+    // PRIVATE METHODS
+    // ===================================
+
+    private void Start()
+    {
+        m_rigidbody = GetComponent<Rigidbody>();
+
+        m_thrustParticles = GetComponentInChildren<ParticleSystem>();
+        EnableParticles(false);
+    }
+
+    private void EnableParticles(bool enabled)
+    {
+        var emission = m_thrustParticles.emission;
+        emission.enabled = enabled;
+    }
+
+    /// <summary>
+    /// Non physics-based update
+    /// </summary>
+    private void Update()
+    {
+        if (GameManager.IsOverworldPlaying())
+        {
+            GetInputs();
+            SetParticlesSpeed();
+        }
     }
 
     private void GetInputs()
@@ -99,18 +95,6 @@ public class Spaceship : MonoBehaviour
         }
     }
 
-    private void EnableParticles(bool enabled)
-    {
-        var emission = m_thrustParticles.emission;
-        emission.enabled = enabled;
-    }
-
-    private void SetParticlesSpeed()
-    {
-        var main = m_thrustParticles.main;
-        main.startSpeed = m_thrustInput <= m_slowdownThreshold ? 0.5f : 5.0f;
-    }
-
     private void StartAndStop()
     {
         m_isHovering = m_isHovering ? false : true;
@@ -125,19 +109,33 @@ public class Spaceship : MonoBehaviour
         m_isAtMaxHeight = !m_isAtMaxHeight;
     }
 
-    private void SlowdownVelocity()
+    private void SetParticlesSpeed()
     {
-        if (m_thrustInput <= m_slowdownThreshold)
-        {
-            m_rigidbody.velocity *= m_thrustSlowdownFactor;   
-        }
+        var main = m_thrustParticles.main;
+        main.startSpeed = m_thrustInput <= m_slowdownThreshold ? 0.5f : 5.0f;
+    }
 
-        if (m_rigidbody.angularVelocity.magnitude > m_slowdownThreshold)
+    /// <summary>
+    /// Physics-based movements update
+    /// </summary>
+    private void FixedUpdate()
+    {
+        if (GameManager.IsOverworldPlaying())
         {
-            m_rigidbody.angularVelocity *= m_rotationSlowdownFactor;
+            if (m_isHovering)
+            {
+                Hover();
+                ApplyThrust();
+                ApplyRotation();
+            }
+
+            SlowdownVelocity();
         }
     }
 
+    /// <summary>
+    /// Physics-based hover force
+    /// </summary>
     private void Hover()
     {
         const float heightReachedThreshold = 0.8f;
@@ -160,6 +158,9 @@ public class Spaceship : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Physics-based thrust force
+    /// </summary>
     private void ApplyThrust()
     {
         Vector3 thrust = transform.forward * m_thrustForce * m_thrustInput;
@@ -172,8 +173,40 @@ public class Spaceship : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Physics-based torque rotation
+    /// </summary>
     private void ApplyRotation()
     {
         m_rigidbody.AddRelativeTorque(0f, m_rotationInput, 0f, ForceMode.VelocityChange);
+    }
+
+    private void SlowdownVelocity()
+    {
+        if (m_thrustInput <= m_slowdownThreshold)
+        {
+            m_rigidbody.velocity *= m_thrustSlowdownFactor;   
+        }
+
+        if (m_rigidbody.angularVelocity.magnitude > m_slowdownThreshold)
+        {
+            m_rigidbody.angularVelocity *= m_rotationSlowdownFactor;
+        }
+    }
+
+    /// <summary>
+    /// Trigger enter response and feedback
+    /// </summary>
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("LevelPoint") && !m_isHovering)
+        {
+            LevelPoint levelPoint = other.gameObject.GetComponent<LevelPoint>();
+
+            if (EnterLevelPoint != null && levelPoint != null)
+            {
+                EnterLevelPoint(levelPoint.levelName);
+            }
+        }
     }
 }

@@ -1,7 +1,14 @@
 using UnityEngine;
 
+/// <summary>
+/// Handles bullet behaviour
+/// </summary>
 public class Bullet : MonoBehaviour
 {
+    // ===================================
+    // ATTRIBUTES
+    // ===================================
+
     public Vector3 hitPoint;
 
     private Rigidbody m_rigidbody;
@@ -12,6 +19,10 @@ public class Bullet : MonoBehaviour
 
     // ===================================
 
+    // ===================================
+    // PRIVATE METHODS
+    // ===================================
+
     private void Start()
     {
         m_rigidbody = GetComponent<Rigidbody>();
@@ -19,6 +30,10 @@ public class Bullet : MonoBehaviour
         m_rigidbody.AddForce((hitPoint - transform.position).normalized * m_speed, ForceMode.VelocityChange);
     }
 
+    /// <summary>
+    /// Collision response and feedback
+    /// </summary>
+    /// <param name="collision"></param>
     private void OnCollisionEnter(Collision collision)
     {
         m_rigidbody.useGravity = true;
@@ -38,6 +53,10 @@ public class Bullet : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Adds a feedback force to the enemy's body and destroy the bullet
+    /// </summary>
+    /// <param name="collisionObject"></param>
     private void Explode(GameObject collisionObject)
     {
         Enemy enemy = collisionObject.GetComponent<Enemy>();

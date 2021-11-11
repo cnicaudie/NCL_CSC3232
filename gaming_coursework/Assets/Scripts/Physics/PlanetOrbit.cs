@@ -1,7 +1,16 @@
 using UnityEngine;
 
+/// <summary>
+/// Orbit movement simulator (moon orbit around earth)
+/// This is not physics based to allow the orbit to pause
+/// when the spaceship enters this orbit
+/// </summary>
 public class PlanetOrbit : MonoBehaviour
 {
+    // ===================================
+    // ATTRIBUTES
+    // ===================================
+
     private PlanetGravitation m_planet;
     
     [SerializeField] private GameObject m_gravityTarget;
@@ -11,6 +20,10 @@ public class PlanetOrbit : MonoBehaviour
     public float orbitChangeSpeed;
     public float orbitSpeed;
 
+    // ===================================
+
+    // ===================================
+    // PRIVATE METHODS
     // ===================================
 
     private void Start()
@@ -34,6 +47,10 @@ public class PlanetOrbit : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Computes a slight random change in orbit axis
+    /// </summary>
+    /// <returns></returns>
     private Vector3 GetNextOrbitAxis()
     {
         Vector3 randomAxis = new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1));
@@ -41,6 +58,10 @@ public class PlanetOrbit : MonoBehaviour
         return Vector3.Slerp(orbitAxis, randomAxis.normalized, orbitChangeSpeed * Time.deltaTime);
     }
 
+    /// <summary>
+    /// Get adjusted distance to the gravity target
+    /// </summary>
+    /// <returns></returns>
     private Vector3 GetNextOrbitPosition()
     {
         Vector3 direction = m_gravityTarget.transform.position - transform.position;

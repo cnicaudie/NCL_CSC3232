@@ -592,7 +592,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 138419670}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb7c5ec0a36da4623a7dbc9b9af73e09, type: 3}
+  m_Script: {fileID: 11500000, guid: 35c467d52818a4f98b5376860fd3704c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!65 &138419673
@@ -1250,9 +1250,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 402fc8599798547eba5c35f4e7fd3a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_enemy: {fileID: 1473175291}
   bodyPart: 2
+  m_enemy: {fileID: 1473175291}
   m_damageAmount: 0
+  m_attackAmount: 0
 --- !u!54 &284548257
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1336,9 +1337,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 402fc8599798547eba5c35f4e7fd3a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_enemy: {fileID: 1473175291}
   bodyPart: 0
+  m_enemy: {fileID: 1473175291}
   m_damageAmount: 0
+  m_attackAmount: 0
 --- !u!54 &290019162
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4956,9 +4958,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 402fc8599798547eba5c35f4e7fd3a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_enemy: {fileID: 1473175291}
   bodyPart: 2
+  m_enemy: {fileID: 1473175291}
   m_damageAmount: 0
+  m_attackAmount: 0
 --- !u!54 &1326167723
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -7418,9 +7421,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 402fc8599798547eba5c35f4e7fd3a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_enemy: {fileID: 1473175291}
   bodyPart: 1
+  m_enemy: {fileID: 1473175291}
   m_damageAmount: 0
+  m_attackAmount: 0
 --- !u!54 &1844827160
 Rigidbody:
   m_ObjectHideFlags: 0

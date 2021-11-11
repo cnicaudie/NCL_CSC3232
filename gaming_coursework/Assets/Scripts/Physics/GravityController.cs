@@ -1,7 +1,14 @@
 using UnityEngine;
 
+/// <summary>
+/// Handles the gravity based on the current planet
+/// </summary>
 public class GravityController : MonoBehaviour
 {
+    // ===================================
+    // ATTRIBUTES
+    // ===================================
+
     [SerializeField] private PlanetGravitation m_planet;
     public PlanetGravitation Planet
     {
@@ -15,6 +22,10 @@ public class GravityController : MonoBehaviour
 
     private float m_rotationSpeed = 20.0f;
 
+    // ===================================
+
+    // ===================================
+    // PRIVATE METHODS
     // ===================================
 
     private void Start()
@@ -33,6 +44,9 @@ public class GravityController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Computes and applies the relative physics gravity on the current planet
+    /// </summary>
     private void ApplyRelativeGravity()
     {
         // Add gravity relatively to the planet it's on
@@ -40,9 +54,11 @@ public class GravityController : MonoBehaviour
         m_rigidbody.AddForce(m_revGravityDirection * m_planet.Gravity);        
     }
 
+    /// <summary>
+    /// Applies a relative rotation to the body to make it "walk on the planet"
+    /// </summary>
     private void ApplyRelativeRotation()
     {
-        // Rotate the body so that it always "walks on the ground"
         Quaternion targetRotation = Quaternion.FromToRotation(transform.up, m_revGravityDirection) * transform.rotation;
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, m_rotationSpeed * Time.fixedDeltaTime);
     }

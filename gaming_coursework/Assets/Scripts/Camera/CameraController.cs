@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Handles the camera movements in each camera modes
+/// </summary>
 public class CameraController : MonoBehaviour
 {
     public enum CameraMode
@@ -8,6 +11,11 @@ public class CameraController : MonoBehaviour
         Overworld,
         EncounterLevel
     }
+
+    // ===================================
+    // ATTRIBUTES
+    // ===================================
+
     [SerializeField] private CameraMode m_cameraMode;
 
     [SerializeField] private Transform m_target;
@@ -20,6 +28,26 @@ public class CameraController : MonoBehaviour
 
     // ===================================
 
+    // ===================================
+    // PUBLIC METHODS
+    // ===================================
+
+    /// <summary>
+    /// Sets the new camera mode
+    /// </summary>
+    /// <param name="cameraMode"></param>
+    public void SetCameraMode(CameraMode cameraMode)
+    {
+        m_cameraMode = cameraMode;
+    }
+
+    // ===================================
+    // PRIVATE METHODS
+    // ===================================
+
+    /// <summary>
+    /// Camera follow is done in FixedUpdate to avoid lag/flickering
+    /// </summary>
     private void FixedUpdate()
     {
         switch (m_cameraMode)
@@ -39,6 +67,9 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Follows the target with a given offset
+    /// </summary>
     private void FollowTarget()
     {
         // Apply the camera offset
@@ -47,10 +78,5 @@ public class CameraController : MonoBehaviour
 
         // Look towards the target
         transform.LookAt(m_target);
-    }
-
-    public void SetCameraMode(CameraMode cameraMode)
-    {
-        m_cameraMode = cameraMode;
     }
 }

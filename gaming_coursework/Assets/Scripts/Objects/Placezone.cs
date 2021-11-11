@@ -1,7 +1,14 @@
 using UnityEngine;
 
+/// <summary>
+/// Handles placezone behaviour
+/// </summary>
 public class Placezone : MonoBehaviour
 {
+    // ===================================
+    // ATTRIBUTES
+    // ===================================
+
     [SerializeField] private Color m_availableColor;
     [SerializeField] private Color m_unavailableColor;
 
@@ -19,10 +26,9 @@ public class Placezone : MonoBehaviour
 
     // ===================================
 
-    private void Start()
-    {
-        SetColor();
-    }
+    // ===================================
+    // PUBLIC METHODS
+    // ===================================
 
     public void Use()
     {
@@ -44,6 +50,15 @@ public class Placezone : MonoBehaviour
         {
             FreePlacezone();
         }
+    }
+
+    // ===================================
+    // PRIVATE METHODS
+    // ===================================
+
+    private void Start()
+    {
+        SetColor();
     }
 
     private void SetColor()

@@ -2,8 +2,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+/// Handles current level and check for win/lose cases
+/// </summary>
 public class LevelManager : MonoBehaviour
 {
+    // ===================================
+    // ATTRIBUTES
+    // ===================================
+
     [SerializeField] private float m_gravityScale;
     [SerializeField] private float m_levelMaxDistance = 10f;
 
@@ -24,26 +31,17 @@ public class LevelManager : MonoBehaviour
 
     // ===================================
 
-    private void Start()
-    {
-        InitGravity();
+    // ===================================
+    // PUBLIC METHODS
+    // ===================================
 
-        m_placezones = FindObjectsOfType<Placezone>();
-
-        for (int i = 0; i < m_placezones.Length; i++)
-        {
-            m_placezones[i].UsePlacezone += StoreObject;
-            m_placezones[i].FreePlacezone += UnstoreObject;
-        }
-
-        SpawnPickables();
-        
-        for (int i = 0; i < m_pickablesCount; i++)
-        {
-            m_pickables[i].DestroyPickable += DestroyPickable;
-        }
-    }
-
+    /// <summary>
+    /// Computes a random point on the level's NavMesh in a given radius
+    /// </summary>
+    /// <param name="center">Source point</param>
+    /// <param name="maxDistance">Max radius</param>
+    /// <param name="randomPosition">Random resulted position</param>
+    /// <returns>True if a point was found, false otherwise</returns>
     public static bool GetRandomPosition(Vector3 center, float maxDistance, out Vector3 randomPosition)
     {
         Vector2 randomOffset = Random.insideUnitSphere * maxDistance;
@@ -96,11 +94,42 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    // ===================================
+    // PRIVATE METHODS
+    // ===================================
+
+    private void Start()
+    {
+        InitGravity();
+
+        m_placezones = FindObjectsOfType<Placezone>();
+
+        for (int i = 0; i < m_placezones.Length; i++)
+        {
+            m_placezones[i].UsePlacezone += StoreObject;
+            m_placezones[i].FreePlacezone += UnstoreObject;
+        }
+
+        SpawnPickables();
+        
+        for (int i = 0; i < m_pickablesCount; i++)
+        {
+            m_pickables[i].DestroyPickable += DestroyPickable;
+        }
+    }
+
+    /// <summary>
+    /// Allows different gravity value for different levels
+    /// </summary>
     private void InitGravity()
     {
         Physics.gravity = Vector3.down * m_gravityScale;
     }
 
+    /// <summary>
+    /// Spawns a random number of pickable objects (min : number of placezones)
+    /// in random locations on the map
+    /// </summary>
     private void SpawnPickables()
     {
         m_pickables = new List<Pickable>();
