@@ -19,8 +19,8 @@ public class Player : Entity
     private CapsuleCollider m_collider;
 
     // Dynamic change of mass
-    private float m_defaultMass = 50f;
-    private float m_injuredMass = 150f;
+    [SerializeField] private float m_defaultMass = 50f;
+    [SerializeField] private float m_injuredMass = 150f;
     private Rigidbody m_rigidbody;
 
     private float m_animationSpeedMultiplier = 1f;
