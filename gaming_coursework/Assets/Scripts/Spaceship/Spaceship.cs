@@ -151,6 +151,7 @@ public class Spaceship : MonoBehaviour
             {
                 Debug.DrawRay(hoverPoint.position, -transform.up * hitInfos.distance, Color.red);
 
+                // Allow to wait for the spaceship to be stabilized at target height
                 m_isAtTargetHeight = Mathf.Abs(hitInfos.distance - m_hoverTargetHeight) < heightReachedThreshold;
 
                 m_rigidbody.AddForceAtPosition(transform.up * m_hoverTargetHeight, hoverPoint.position, ForceMode.Impulse);
@@ -167,6 +168,7 @@ public class Spaceship : MonoBehaviour
 
         Vector3 rbVelocity = m_rigidbody.velocity;
 
+        // Stabilize spaceship's velocity
         if (rbVelocity.magnitude < m_maxVelocity)
         {
             m_rigidbody.AddForce(thrust * Time.fixedDeltaTime, ForceMode.Impulse);

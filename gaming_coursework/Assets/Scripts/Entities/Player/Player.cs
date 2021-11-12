@@ -9,15 +9,23 @@ public class Player : Entity
     // ATTRIBUTES
     // ===================================
 
+    private Vector3 m_basePosition;
+
     private Animator m_animator;
 
     // Dynamic change of physic material properties
     [SerializeField] private PhysicMaterial m_defaultMaterial;
     [SerializeField] private PhysicMaterial m_injuredMaterial;
-
     private CapsuleCollider m_collider;
 
+    // Dynamic change of mass
+    [SerializeField] private float m_defaultMass = 50f;
+    [SerializeField] private float m_injuredMass = 150f;
+    private Rigidbody m_rigidbody;
+
     private float m_animationSpeedMultiplier = 1f;
+
+    private float m_fallDamage = 20f;
 
     // ===================================
 
@@ -29,9 +37,11 @@ public class Player : Entity
     {
         base.Start();
 
+        m_basePosition = transform.position;
         m_animator = GetComponent<Animator>();
-        m_collider = GetComponent<CapsuleCollider>();
         m_animator.SetFloat("AnimationSpeed", m_animationSpeedMultiplier);
+        m_rigidbody = GetComponent<Rigidbody>();
+        m_collider = GetComponent<CapsuleCollider>();
     }
 
     protected override void Update()
@@ -45,12 +55,21 @@ public class Player : Entity
             if (m_isDamageable)
             {
                 m_collider.material = m_defaultMaterial;
+                m_rigidbody.mass = m_defaultMass;
                 m_animator.SetFloat("AnimationSpeed", m_animationSpeedMultiplier);
             }
             else
             {
                 m_collider.material = m_injuredMaterial;
+                m_rigidbody.mass = m_injuredMass;
                 m_animator.SetFloat("AnimationSpeed", m_animationSpeedMultiplier / 2f);
+            }
+
+            // Check if player falls off the ground
+            if (transform.position.y < -5f)
+            {
+                Damage(m_fallDamage);
+                transform.position = m_basePosition;
             }
         }
     }

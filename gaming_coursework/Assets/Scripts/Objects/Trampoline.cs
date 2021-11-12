@@ -9,7 +9,7 @@ public class Trampoline : MonoBehaviour
     // ATTRIBUTES
     // ===================================
 
-    private float m_bounciness = 5000f;
+    [SerializeField] private float m_bounciness = 5000f;
 
     // ===================================
 

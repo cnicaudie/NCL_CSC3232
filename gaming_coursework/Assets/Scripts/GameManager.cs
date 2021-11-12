@@ -114,16 +114,18 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        m_uiManager = FindObjectOfType<UIManager>();
+
         // TODO : Remove later
         switch (startType)
         {
             case StartType.Overworld:
-                m_uiManager = FindObjectOfType<UIManager>();
                 m_camera = FindObjectOfType<CameraController>();
                 s_gameState = GameState.Menu;
                 break;
 
             case StartType.Level:
+                m_nextLevelName = SceneManager.GetActiveScene().name;
                 InitLevel();
                 break;
 
