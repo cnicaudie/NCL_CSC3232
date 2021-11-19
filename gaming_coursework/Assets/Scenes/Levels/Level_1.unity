@@ -15373,6 +15373,7 @@ MonoBehaviour:
   m_actionRange: 7
   m_isDamageable: 1
   m_damageCooldown: 4
+  m_hitBlood: {fileID: 1968586304485042, guid: 6c86c599d7bf3464eb4506d2584fbe57, type: 3}
   m_defaultMaterial: {fileID: 13400000, guid: f7332e59a291c46df9e202c2298e0dc0, type: 2}
   m_injuredMaterial: {fileID: 13400000, guid: 9d2d356482d594ac3993d0665390fbb7, type: 2}
   m_defaultMass: 50

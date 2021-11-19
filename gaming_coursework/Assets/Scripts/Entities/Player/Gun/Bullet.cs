@@ -50,8 +50,9 @@ public class Bullet : MonoBehaviour
         else if (collision.gameObject.CompareTag("Obstacle")
             || collision.gameObject.CompareTag("Ground"))
         {
+            Vector3 impactPoint = collision.GetContact(0).point;
             Quaternion impactAngle = Quaternion.Euler(collision.GetContact(0).normal);
-            GameObject impact = Instantiate(m_hitImpact, transform.position, impactAngle, transform.parent);
+            GameObject impact = Instantiate(m_hitImpact, impactPoint, impactAngle, transform.parent);
             Destroy(impact, 1f);
         }
 
