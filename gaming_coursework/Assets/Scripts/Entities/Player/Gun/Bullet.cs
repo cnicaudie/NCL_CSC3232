@@ -17,6 +17,8 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float m_explosionForce = 7000f;
     [SerializeField] private float m_explosionRadius = 30f;
 
+    [SerializeField] private GameObject m_collisionExplosion;
+
     // ===================================
 
     // ===================================
@@ -40,6 +42,9 @@ public class Bullet : MonoBehaviour
 
         if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
+            GameObject explosion = Instantiate(m_collisionExplosion, transform.position, transform.rotation, transform.parent);
+            Destroy(explosion, 1f);
+
             Explode(collision.gameObject);
         }
         else if (collision.gameObject.CompareTag("Obstacle")
@@ -67,6 +72,6 @@ public class Bullet : MonoBehaviour
             rb.AddExplosionForce(m_explosionForce, transform.position, m_explosionRadius, 0f, ForceMode.Force);
         }
 
-        Destroy(gameObject, 0.5f);
+        Destroy(gameObject);
     }
 }
