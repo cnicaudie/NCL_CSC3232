@@ -12,8 +12,7 @@ public class Gun : MonoBehaviour
     [SerializeField] private GameObject m_bullet;
 
     [SerializeField] private Transform m_shootPoint;
-    [SerializeField] private Transform m_bulletsParent;
-
+    
     private const int k_maxAmmunitions = 5;
     [SerializeField] private int m_ammunitions = k_maxAmmunitions;
     [SerializeField] private bool m_infiniteAmmos = false;
@@ -47,7 +46,7 @@ public class Gun : MonoBehaviour
 
     private void InstantiateBullet(Vector3 hitPoint)
     {
-        GameObject bullet = Instantiate(m_bullet, m_shootPoint.position, Quaternion.identity, m_bulletsParent);
+        GameObject bullet = Instantiate(m_bullet, m_shootPoint.position, Quaternion.identity, m_bullet.transform.parent);
 
         bullet.SetActive(true);
 
