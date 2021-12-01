@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour
     // ATTRIBUTES
     // ===================================
 
+    private static GameManager m_instance; // singleton instance
+
     public static GameState s_gameState;
 
     private UIManager m_uiManager;
@@ -102,14 +104,15 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        GameManager[] gameManagers = FindObjectsOfType<GameManager>();
-
-        if (gameManagers.Length > 1)
+        if (m_instance == null)
+        {
+            m_instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (m_instance != this)
         {
             Destroy(gameObject);
         }
-
-        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
