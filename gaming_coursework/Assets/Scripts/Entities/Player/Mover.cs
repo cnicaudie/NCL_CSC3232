@@ -117,6 +117,8 @@ public class Mover : MonoBehaviour
 
         if (m_currentPickUpObject != null)
         {
+            SoundManager.PlaySound("pickObject");
+
             if (m_currentPickUpObject.IsPlaced)
             {
                 m_currentPickUpObject.Unplace();
@@ -160,6 +162,8 @@ public class Mover : MonoBehaviour
     {
         if (m_currentPlacezone.IsAvailable)
         {
+            SoundManager.PlaySound("placeObject");
+
             m_hasPickedUpObject = false;
             m_currentPickUpObject.Place(m_currentPlacezone);
             m_currentPickUpObject = null;

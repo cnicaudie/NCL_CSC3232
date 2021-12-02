@@ -10,30 +10,32 @@ public class SoundManager : MonoBehaviour
     private static SoundManager m_instance; // singleton instance
 
     private static AudioSource m_audioSource;
+    private static bool m_isLooping = false;
 
     // Menu
     public GameObject menuAudio;
     public static AudioSource menuBackground; // universe music
-    public static AudioClip buttonClick;
+    //public static AudioClip buttonClick;
 
     // Overworld
     public GameObject overworldAudio;
-    public static AudioSource overworldBackground; // deep in space
-    public static AudioClip spaceshipEngine; // spaceship started : ok
-    public static AudioClip teleportationJump; // level enter : ok
-    public static AudioClip blowDistance; // orbit exited : ok
+    public static AudioSource overworldBackground;
+    public static AudioClip spaceshipEngine;
+    public static AudioClip exitOrbit;
+    public static AudioClip enterLevel;
+    // TODO : add thrust ?
 
     // Level
     public GameObject levelAudio;
-    public static AudioSource levelBackground; // sci fi loop
+    public static AudioSource levelBackground;
     public static AudioClip walk;
-    public static AudioClip jump; // ok
-    public static AudioClip punch; // ok
-    public static AudioClip shoot; // ok
-    public static AudioClip bulletImpact; // ok
-    public static AudioClip die; // ok : ambient 5
-    public static AudioClip placeObject; // ok : powerup
-    public static AudioClip pickObject; // ok : collectible 3
+    public static AudioClip jump;
+    public static AudioClip punch;
+    public static AudioClip shoot;
+    public static AudioClip bulletImpact;
+    public static AudioClip die;
+    public static AudioClip placeObject;
+    public static AudioClip pickObject;
 
     // =================================
 
@@ -46,36 +48,50 @@ public class SoundManager : MonoBehaviour
         switch (gameState)
         {
             case GameManager.GameState.Menu:
+                Debug.Log("PLAY MENU BACKGROUND");
                 overworldBackground.Stop();
                 levelBackground.Stop();
                 menuBackground.Play();
                 break;
 
-            case GameManager.GameState.Level:
-                menuBackground.Stop();
-                overworldBackground.Stop();
-                levelBackground.Play();
-                break;
-
             case GameManager.GameState.Overworld:
+                Debug.Log("PLAY OVERWORLD BACKGROUND");
                 menuBackground.Stop();
                 levelBackground.Stop();
                 overworldBackground.Play();
+                break;
+
+            case GameManager.GameState.Level:
+                Debug.Log("PLAY LEVEL BACKGROUND");
+                menuBackground.Stop();
+                overworldBackground.Stop();
+                levelBackground.Play();
                 break;
         }
     }
 
     public static void PlaySound(string name)
     {
-        // TODO
-        /*
-        switch (name)
+        switch(GameManager.GetGameState())
         {
-            case "test":
-                m_audioSource.PlayOneShot(test);
+            case GameManager.GameState.Menu:
+                //PlayMenuSound(name);
+                break;
+
+            case GameManager.GameState.Overworld:
+                PlayOverworldSound(name);
+                break;
+
+            case GameManager.GameState.Level:
+                PlayLevelSound(name);
                 break;
         }
-        */
+    }
+
+    public static void PauseSound()
+    {
+        m_audioSource.Stop();
+        m_isLooping = false;
     }
 
     // ===================================
@@ -84,6 +100,7 @@ public class SoundManager : MonoBehaviour
 
     /// <summary>
     /// Makes the SoundManager a "Don't Destroy On Load" object (singleton)
+    /// and init audio sources
     /// </summary>
     private void Awake()
     {
@@ -96,25 +113,127 @@ public class SoundManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        InitAudioSources();
     }
 
     private void Start()
     {
-        m_audioSource = GetComponent<AudioSource>();
+        InitAudioClips();
+    }
 
+    private void InitAudioSources()
+    {
+        m_audioSource = GetComponent<AudioSource>();
         menuBackground = menuAudio.GetComponent<AudioSource>();
         overworldBackground = overworldAudio.GetComponent<AudioSource>();
         levelBackground = levelAudio.GetComponent<AudioSource>();
 
+        m_audioSource.Stop();
+        menuBackground.Stop();
+        overworldBackground.Stop();
+        levelBackground.Stop();
+    }
+
+    private void InitAudioClips()
+    {
         // TODO : Load audio clips from resources
-        /*
-        pickUpAmmo = Resources.Load<AudioClip>("Sounds/pickUpAmmo");
-        fullLayerWin = Resources.Load<AudioClip>("Sounds/fullLayerWin");
-        jump = Resources.Load<AudioClip>("Sounds/jump");
-        bubbleHit = Resources.Load<AudioClip>("Sounds/bubbleHit");
-        bubbleFire = Resources.Load<AudioClip>("Sounds/bubbleFire");
-        die = Resources.Load<AudioClip>("Sounds/die");
-        bumpInObstacle = Resources.Load<AudioClip>("Sounds/bumpInObstacle");
-        */
+
+        // Overworld
+        spaceshipEngine = Resources.Load<AudioClip>("Sounds/Spaceship_Engine_2");
+        exitOrbit = Resources.Load<AudioClip>("Sounds/Blow_Distance");
+        enterLevel = Resources.Load<AudioClip>("Sounds/Teleportation_Jump");
+
+        // Level
+        walk = Resources.Load<AudioClip>("Sounds/Bounce_4");
+        jump = Resources.Load<AudioClip>("Sounds/Jump_9");
+        punch = Resources.Load<AudioClip>("Sounds/Bloody_punch");
+        shoot = Resources.Load<AudioClip>("Sounds/Hand_Gun_2");
+        bulletImpact = Resources.Load<AudioClip>("Sounds/Bullet_Impact_14");
+        die = Resources.Load<AudioClip>("Sounds/Ambient_5");
+        placeObject = Resources.Load<AudioClip>("Sounds/Powerup_6");
+        pickObject = Resources.Load<AudioClip>("Sounds/Collectibles_3");
+    }
+
+    private static void PlayLevelSound(string name)
+    {
+        switch (name)
+        {
+            case "jump":
+                PlayOneShot(jump);
+                break;
+
+            case "punch":
+                PlayOneShot(punch);
+                break;
+
+            case "shoot":
+                PlayOneShot(shoot);
+                break;
+
+            case "bulletImpact":
+                PlayOneShot(bulletImpact);
+                break;
+
+            case "die":
+                PlayOneShot(die);
+                break;
+
+            case "placeObject":
+                PlayOneShot(placeObject);
+                break;
+
+            case "pickObject":
+                PlayOneShot(pickObject);
+                break;
+
+            case "walk":
+                PlayLoopOnce(walk, 0.1f, 0.45f);
+                break;
+        }
+    }
+
+    private static void PlayOverworldSound(string name)
+    {
+        switch (name)
+        {
+            case "exitOrbit":
+                PlayOneShot(exitOrbit);
+                break;
+
+            case "enterLevel":
+                PlayOneShot(enterLevel);
+                break;
+
+            case "spaceshipEngine":
+                PlayLoopOnce(spaceshipEngine, 0.3f);
+                break;
+        }
+    }
+
+    private static void PlayLoopOnce(AudioClip clip, float volume = 0.35f, float pitch = 1f)
+    {
+        if (!m_audioSource.isPlaying)
+        {
+            if (!m_isLooping || (m_isLooping && m_audioSource.clip != clip))
+            {
+                m_audioSource.Stop();
+                m_isLooping = true;
+                m_audioSource.loop = true;
+                m_audioSource.volume = volume;
+                m_audioSource.pitch = pitch;
+                m_audioSource.clip = clip;
+                m_audioSource.Play();
+            }
+        }
+    }
+
+    private static void PlayOneShot(AudioClip clip)
+    {
+        m_audioSource.Stop();
+        m_isLooping = false;
+        m_audioSource.loop = false;
+        m_audioSource.clip = clip;
+        m_audioSource.Play();
     }
 }

@@ -50,6 +50,8 @@ public class Entity : MonoBehaviour
 
         if (m_health.IsDead())
         {
+            SoundManager.PlaySound("die");
+
             m_isDead = true;
 
             Debug.Log("Entity " + gameObject.name + " died !");

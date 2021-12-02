@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     private float m_speed;
     [SerializeField] private float m_defaultSpeed = 130.0f;
     [SerializeField] private float m_airSpeed = 80.0f;
+    [SerializeField] private bool m_isMoving = false;
 
     private float m_moveThreshold = 0.5f;
     private float m_slowdownFactor = 0.5f;
@@ -114,11 +115,24 @@ public class PlayerMovement : MonoBehaviour
 
         if (moveDirection.magnitude >= m_moveThreshold)
         {
+            SoundManager.PlaySound("walk");
+
+            if (!m_isMoving)
+            {
+                m_isMoving = true;
+            }
+
             ApplyVelocity(moveDirection);
             Rotate(moveDirection);
         }
         else if (m_isGrounded)
         {
+            if (m_isMoving)
+            {
+                m_isMoving = false;
+                SoundManager.PauseSound();
+            }
+
             SlowdownVelocity();
         }
     }
@@ -147,6 +161,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
+        SoundManager.PlaySound("jump");
         m_isJumping = true;
         m_rigidbody.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
     }

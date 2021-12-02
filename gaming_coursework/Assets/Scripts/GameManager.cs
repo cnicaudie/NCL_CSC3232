@@ -52,6 +52,11 @@ public class GameManager : MonoBehaviour
         return s_gameState == GameState.Overworld;
     }
 
+    public static GameState GetGameState()
+    {
+        return s_gameState;
+    }
+
     public void PlayGame()
     {
         m_uiManager.ToggleMainMenu();
@@ -124,7 +129,7 @@ public class GameManager : MonoBehaviour
         {
             case StartType.Overworld:
                 m_camera = FindObjectOfType<CameraController>();
-                s_gameState = GameState.Menu;
+                SetGameState(GameState.Menu);
                 break;
 
             case StartType.Level:

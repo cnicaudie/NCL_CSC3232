@@ -41,6 +41,8 @@ public class Bullet : MonoBehaviour
     /// <param name="collision"></param>
     private void OnCollisionEnter(Collision collision)
     {
+        SoundManager.PlaySound("bulletImpact");
+
         m_rigidbody.useGravity = true;
 
         if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))

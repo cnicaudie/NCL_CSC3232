@@ -100,6 +100,11 @@ public class Spaceship : MonoBehaviour
         m_isHovering = m_isHovering ? false : true;
 
         EnableParticles(m_isHovering);
+
+        if (!m_isHovering)
+        {
+            SoundManager.PauseSound();
+        }
     }
 
     private void ToggleMaxHoverHeight()
@@ -138,6 +143,8 @@ public class Spaceship : MonoBehaviour
     /// </summary>
     private void Hover()
     {
+        SoundManager.PlaySound("spaceshipEngine");
+
         const float heightReachedThreshold = 0.8f;
 
         int layerMask = ~LayerMask.NameToLayer("Planet");
@@ -207,6 +214,8 @@ public class Spaceship : MonoBehaviour
 
             if (EnterLevelPoint != null && levelPoint != null)
             {
+                SoundManager.PlaySound("enterLevel");
+
                 EnterLevelPoint(levelPoint.levelName);
             }
         }
