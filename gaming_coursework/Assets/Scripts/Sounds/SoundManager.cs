@@ -74,7 +74,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlaySound(string name)
     {
-        switch(GameManager.GetGameState())
+        switch(GameManager.Instance.GetGameState())
         {
             case GameManager.GameState.Overworld:
                 PlayOverworldSound(name);

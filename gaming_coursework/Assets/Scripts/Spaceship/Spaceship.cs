@@ -72,7 +72,7 @@ public class Spaceship : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (GameManager.IsOverworldPlaying())
+        if (GameManager.Instance.IsOverworldPlaying())
         {
             GetInputs();
             SetParticlesSpeed();
@@ -125,7 +125,7 @@ public class Spaceship : MonoBehaviour
     /// </summary>
     private void FixedUpdate()
     {
-        if (GameManager.IsOverworldPlaying())
+        if (GameManager.Instance.IsOverworldPlaying())
         {
             if (m_isHovering)
             {

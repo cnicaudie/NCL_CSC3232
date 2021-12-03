@@ -51,7 +51,7 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (GameManager.IsGamePlaying())
+        if (GameManager.Instance.IsGamePlaying())
         {
             GetInputs();
             SetSpeed();
@@ -84,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void FixedUpdate()
     {
-        if (GameManager.IsGamePlaying())
+        if (GameManager.Instance.IsGamePlaying())
         {
             GroundCheck();
 

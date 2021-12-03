@@ -30,7 +30,7 @@ public class Gun : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.IsGamePlaying())
+        if (GameManager.Instance.IsGamePlaying())
         {
             m_cooldownSpeed += Time.deltaTime;
     

@@ -48,7 +48,7 @@ public class Player : Entity
 
     protected override void Update()
     {
-        if (GameManager.IsGamePlaying())
+        if (GameManager.Instance.IsGamePlaying())
         {
             base.Update();
 

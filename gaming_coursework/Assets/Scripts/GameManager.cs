@@ -17,8 +17,12 @@ public class GameManager : MonoBehaviour
     // ===================================
 
     private static GameManager m_instance; // singleton instance
+    public static GameManager Instance
+    {
+        get { return m_instance; }
+    }
 
-    public static GameState s_gameState;
+    private GameState m_gameState;
 
     private UIManager m_uiManager;
     private CameraController m_camera;
@@ -42,19 +46,19 @@ public class GameManager : MonoBehaviour
     // PUBLIC METHODS
     // ===================================
 
-    public static bool IsGamePlaying()
+    public bool IsGamePlaying()
     {
-        return s_gameState == GameState.Level;
+        return m_gameState == GameState.Level;
     }
 
-    public static bool IsOverworldPlaying()
+    public bool IsOverworldPlaying()
     {
-        return s_gameState == GameState.Overworld;
+        return m_gameState == GameState.Overworld;
     }
 
-    public static GameState GetGameState()
+    public GameState GetGameState()
     {
-        return s_gameState;
+        return m_gameState;
     }
 
     public void PlayGame()
@@ -176,7 +180,7 @@ public class GameManager : MonoBehaviour
 
     private void SetGameState(GameState gameState)
     {
-        s_gameState = gameState;
+        m_gameState = gameState;
         SoundManager.Instance.PlayBackground(gameState);
     }
 
