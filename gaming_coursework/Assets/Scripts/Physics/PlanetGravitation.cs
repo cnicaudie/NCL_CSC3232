@@ -81,7 +81,7 @@ public class PlanetGravitation : MonoBehaviour
         // Spaceship exits this orbit
         if (other.gameObject.CompareTag("Spaceship") && m_isSpaceshipInThisOrbit)
         {
-            SoundManager.PlaySound("exitOrbit");
+            SoundManager.Instance.PlaySound("exitOrbit");
 
             s_isSpaceshipInOrbit = false;
             m_isSpaceshipInThisOrbit = false;

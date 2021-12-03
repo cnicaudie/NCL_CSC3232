@@ -41,7 +41,7 @@ public class Bullet : MonoBehaviour
     /// <param name="collision"></param>
     private void OnCollisionEnter(Collision collision)
     {
-        SoundManager.PlaySound("bulletImpact");
+        SoundManager.Instance.PlaySound("bulletImpact");
 
         m_rigidbody.useGravity = true;
 

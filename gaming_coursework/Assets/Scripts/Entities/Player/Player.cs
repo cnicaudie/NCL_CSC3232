@@ -104,7 +104,7 @@ public class Player : Entity
                 if (hitArea && hitArea.bodyPart == HitArea.BodyPart.Glove)
                 {
                     Debug.Log("Player got punched by enemy");
-                    SoundManager.PlaySound("punch");
+                    SoundManager.Instance.PlaySound("punch");
 
                     Damage(hitArea.GetAttackDamage());
                 }

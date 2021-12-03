@@ -103,7 +103,7 @@ public class Spaceship : MonoBehaviour
 
         if (!m_isHovering)
         {
-            SoundManager.PauseSound();
+            SoundManager.Instance.PauseSound();
         }
     }
 
@@ -143,7 +143,7 @@ public class Spaceship : MonoBehaviour
     /// </summary>
     private void Hover()
     {
-        SoundManager.PlaySound("spaceshipEngine");
+        SoundManager.Instance.PlaySound("spaceshipEngine");
 
         const float heightReachedThreshold = 0.8f;
 
@@ -214,7 +214,7 @@ public class Spaceship : MonoBehaviour
 
             if (EnterLevelPoint != null && levelPoint != null)
             {
-                SoundManager.PlaySound("enterLevel");
+                SoundManager.Instance.PlaySound("enterLevel");
 
                 EnterLevelPoint(levelPoint.levelName);
             }

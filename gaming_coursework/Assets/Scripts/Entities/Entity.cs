@@ -50,7 +50,7 @@ public class Entity : MonoBehaviour
 
         if (m_health.IsDead())
         {
-            SoundManager.PlaySound("die");
+            SoundManager.Instance.PlaySound("die");
 
             m_isDead = true;
 

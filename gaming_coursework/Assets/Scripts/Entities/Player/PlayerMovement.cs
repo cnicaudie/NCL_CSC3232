@@ -115,7 +115,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (moveDirection.magnitude >= m_moveThreshold)
         {
-            SoundManager.PlaySound("walk");
+            SoundManager.Instance.PlaySound("walk");
 
             if (!m_isMoving)
             {
@@ -130,7 +130,7 @@ public class PlayerMovement : MonoBehaviour
             if (m_isMoving)
             {
                 m_isMoving = false;
-                SoundManager.PauseSound();
+                SoundManager.Instance.PauseSound();
             }
 
             SlowdownVelocity();
@@ -161,7 +161,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        SoundManager.PlaySound("jump");
+        SoundManager.Instance.PlaySound("jump");
         m_isJumping = true;
         m_rigidbody.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
     }

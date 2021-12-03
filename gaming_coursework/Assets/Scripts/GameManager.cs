@@ -177,7 +177,7 @@ public class GameManager : MonoBehaviour
     private void SetGameState(GameState gameState)
     {
         s_gameState = gameState;
-        SoundManager.PlayBackground(gameState);
+        SoundManager.Instance.PlayBackground(gameState);
     }
 
     private IEnumerator LoadNextSceneAsync(string sceneName, bool isLevel)

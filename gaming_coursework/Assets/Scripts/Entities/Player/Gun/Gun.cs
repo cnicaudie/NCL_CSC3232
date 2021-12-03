@@ -55,7 +55,7 @@ public class Gun : MonoBehaviour
 
     private void Shoot()
     {
-        SoundManager.PlaySound("shoot");
+        SoundManager.Instance.PlaySound("shoot");
 
         m_cooldownSpeed = 0f;
         m_ammunitions -= 1;
