@@ -10,6 +10,8 @@ public class UIManager : MonoBehaviour
     // ATTRIBUTES
     // ===================================
 
+    private static UIManager m_instance; // singleton instance
+
     [SerializeField] private GameObject m_mainMenuCanvas;
     [SerializeField] private GameObject m_levelMenuCanvas;
 
@@ -58,13 +60,14 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        UIManager[] uiManagers = FindObjectsOfType<UIManager>();
-
-        if (uiManagers.Length > 1)
+        if (m_instance == null)
+        {
+            m_instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (m_instance != this)
         {
             Destroy(gameObject);
         }
-
-        DontDestroyOnLoad(gameObject);
     }
 }

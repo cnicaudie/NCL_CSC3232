@@ -72,7 +72,7 @@ public class Spaceship : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (GameManager.IsOverworldPlaying())
+        if (GameManager.Instance.IsOverworldPlaying())
         {
             GetInputs();
             SetParticlesSpeed();
@@ -100,6 +100,11 @@ public class Spaceship : MonoBehaviour
         m_isHovering = m_isHovering ? false : true;
 
         EnableParticles(m_isHovering);
+
+        if (!m_isHovering)
+        {
+            SoundManager.Instance.PauseSound();
+        }
     }
 
     private void ToggleMaxHoverHeight()
@@ -120,7 +125,7 @@ public class Spaceship : MonoBehaviour
     /// </summary>
     private void FixedUpdate()
     {
-        if (GameManager.IsOverworldPlaying())
+        if (GameManager.Instance.IsOverworldPlaying())
         {
             if (m_isHovering)
             {
@@ -138,6 +143,8 @@ public class Spaceship : MonoBehaviour
     /// </summary>
     private void Hover()
     {
+        SoundManager.Instance.PlaySound("spaceshipEngine");
+
         const float heightReachedThreshold = 0.8f;
 
         int layerMask = ~LayerMask.NameToLayer("Planet");
@@ -207,6 +214,8 @@ public class Spaceship : MonoBehaviour
 
             if (EnterLevelPoint != null && levelPoint != null)
             {
+                SoundManager.Instance.PlaySound("enterLevel");
+
                 EnterLevelPoint(levelPoint.levelName);
             }
         }

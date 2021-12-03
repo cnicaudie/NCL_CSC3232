@@ -30,7 +30,7 @@ public class Gun : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.IsGamePlaying())
+        if (GameManager.Instance.IsGamePlaying())
         {
             m_cooldownSpeed += Time.deltaTime;
     
@@ -55,6 +55,8 @@ public class Gun : MonoBehaviour
 
     private void Shoot()
     {
+        SoundManager.Instance.PlaySound("shoot");
+
         m_cooldownSpeed = 0f;
         m_ammunitions -= 1;
 
