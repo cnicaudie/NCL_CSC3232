@@ -115,7 +115,14 @@ public class PlayerMovement : MonoBehaviour
 
         if (moveDirection.magnitude >= m_moveThreshold)
         {
-            SoundManager.Instance.PlaySound("walk");
+            if (m_isGrounded)
+            {
+                SoundManager.Instance.PlaySound("walk");
+            }
+            else
+            {
+                SoundManager.Instance.PauseSound();
+            }
 
             if (!m_isMoving)
             {
