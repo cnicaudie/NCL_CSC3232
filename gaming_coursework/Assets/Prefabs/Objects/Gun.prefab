@@ -301,7 +301,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a0b5f4aa7c8842c7aeed618398249e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_bullet: {fileID: 3518744333656250793}
+  m_bulletTemplate: {fileID: 3518744333656250793}
   m_shootPoint: {fileID: 5358305386376169048}
   m_ammunitions: 10
   m_infiniteAmmos: 1
