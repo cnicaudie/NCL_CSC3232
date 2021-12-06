@@ -167,6 +167,9 @@ public class SoundManager : Singleton<SoundManager>
             case "walk":
                 PlayLoopOnce(m_walk, 0.1f, 0.45f);
                 break;
+
+            default:
+                break;
         }
     }
 
@@ -184,6 +187,9 @@ public class SoundManager : Singleton<SoundManager>
 
             case "spaceshipEngine":
                 PlayLoopOnce(m_spaceshipEngine, 0.3f);
+                break;
+
+            default:
                 break;
         }
     }
@@ -205,11 +211,12 @@ public class SoundManager : Singleton<SoundManager>
         }
     }
 
-    private void PlayOneShot(AudioClip clip)
+    private void PlayOneShot(AudioClip clip, float volume = 0.35f, float pitch = 1f)
     {
-        m_audioSource.Stop();
-        m_isLooping = false;
+        PauseSound();
         m_audioSource.loop = false;
+        m_audioSource.volume = volume;
+        m_audioSource.pitch = pitch;
         m_audioSource.clip = clip;
         m_audioSource.Play();
     }

@@ -119,7 +119,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 SoundManager.Instance.PlaySound("walk");
             }
-            else
+            else if (!m_isJumping)
             {
                 SoundManager.Instance.PauseSound();
             }
