@@ -91,8 +91,7 @@ public class Player : Entity
             // Instantiate hit effect
             Vector3 impactPoint = collision.GetContact(0).point;
             Quaternion impactAngle = Quaternion.Euler(collision.GetContact(0).normal);
-            GameObject hitBlood = Instantiate(m_hitBlood, impactPoint, impactAngle);
-            Destroy(hitBlood, 1f);
+            EffectsManager.InstantiateEffect(m_hitBlood, impactPoint, impactAngle, transform);
 
             Enemy enemy = collision.gameObject.GetComponentInParent<Enemy>();
 

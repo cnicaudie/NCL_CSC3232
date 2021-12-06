@@ -52,10 +52,10 @@ public class Bullet : MonoBehaviour
         else if (collision.gameObject.CompareTag("Obstacle")
             || collision.gameObject.CompareTag("Ground"))
         {
+            // Instantiate hit impact effect
             Vector3 impactPoint = collision.GetContact(0).point;
             Quaternion impactAngle = Quaternion.Euler(collision.GetContact(0).normal);
-            GameObject impact = Instantiate(m_hitImpact, impactPoint, impactAngle, transform.parent);
-            Destroy(impact, 1f);
+            EffectsManager.InstantiateEffect(m_hitImpact, impactPoint, impactAngle, transform.parent);
         }
 
         Destroy(gameObject);
@@ -68,8 +68,7 @@ public class Bullet : MonoBehaviour
     private void Explode(GameObject collisionObject)
     {
         // Instantiate explosion effect
-        GameObject explosion = Instantiate(m_hitExplosion, transform.position, transform.rotation, transform.parent);
-        Destroy(explosion, 1f);
+        EffectsManager.InstantiateEffect(m_hitExplosion, transform.position, transform.rotation);
 
         // Apply explosion force
         Enemy enemy = collisionObject.GetComponent<Enemy>();
