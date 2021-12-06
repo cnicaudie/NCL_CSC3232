@@ -1,17 +1,11 @@
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
-public class SoundManager : MonoBehaviour
+public class SoundManager : Singleton<SoundManager>
 {
     // ===================================
     // ATTRIBUTES
     // ===================================
-
-    private static SoundManager m_instance; // singleton instance
-    public static SoundManager Instance
-    {
-        get { return m_instance; }
-    }
 
     private AudioSource m_audioSource;
     private bool m_isLooping = false;
@@ -99,26 +93,11 @@ public class SoundManager : MonoBehaviour
     // PRIVATE METHODS
     // ===================================
 
-    /// <summary>
-    /// Makes the SoundManager a "Don't Destroy On Load" object (singleton)
-    /// and init audio sources
-    /// </summary>
-    private void Awake()
+    protected override void Awake()
     {
-        if (m_instance == null)
-        {
-            m_instance = this;
-            DontDestroyOnLoad(gameObject);
-            InitAudioSources();
-        }
-        else if (m_instance != this)
-        {
-            Destroy(gameObject);
-        }
-    }
+        base.Awake();
 
-    private void Start()
-    {
+        InitAudioSources();
         InitAudioClips();
     }
 

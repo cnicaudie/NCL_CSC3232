@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 /// <summary>
 /// Manage the game in its globality (states / UI / win / lose)
 /// </summary>
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
     public enum GameState
     {
@@ -15,12 +15,6 @@ public class GameManager : MonoBehaviour
     // ===================================
     // ATTRIBUTES
     // ===================================
-
-    private static GameManager m_instance; // singleton instance
-    public static GameManager Instance
-    {
-        get { return m_instance; }
-    }
 
     private GameState m_gameState;
 
@@ -107,22 +101,6 @@ public class GameManager : MonoBehaviour
     // ===================================
     // PRIVATE METHODS
     // ===================================
-
-    /// <summary>
-    /// Makes the GameManager a "Don't Destroy On Load" object (singleton)
-    /// </summary>
-    private void Awake()
-    {
-        if (m_instance == null)
-        {
-            m_instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else if (m_instance != this)
-        {
-            Destroy(gameObject);
-        }
-    }
 
     private void Start()
     {

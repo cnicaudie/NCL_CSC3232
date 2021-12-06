@@ -4,13 +4,11 @@ using UnityEngine.UI;
 /// <summary>
 /// Handles UI menus toggle
 /// </summary>
-public class UIManager : MonoBehaviour
+public class UIManager : Singleton<UIManager>
 {
     // ===================================
     // ATTRIBUTES
     // ===================================
-
-    private static UIManager m_instance; // singleton instance
 
     [SerializeField] private GameObject m_mainMenuCanvas;
     [SerializeField] private GameObject m_levelMenuCanvas;
@@ -49,25 +47,5 @@ public class UIManager : MonoBehaviour
     public void ToggleEndLevelMenu()
     {
         m_endLevelMenuCanvas.SetActive(!m_endLevelMenuCanvas.activeSelf);
-    }
-
-    // ===================================
-    // PRIVATE METHODS
-    // ===================================
-
-    /// <summary>
-    /// Makes the UIManager a "Don't Destroy On Load" object (singleton)
-    /// </summary>
-    private void Awake()
-    {
-        if (m_instance == null)
-        {
-            m_instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else if (m_instance != this)
-        {
-            Destroy(gameObject);
-        }
     }
 }
