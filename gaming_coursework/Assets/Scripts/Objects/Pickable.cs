@@ -91,6 +91,10 @@ public class Pickable : MonoBehaviour
 
             Destroy(gameObject);
         }
+        else if (m_isPlaced)
+        {
+            transform.position = m_currentPlacezone.transform.position;
+        }
     }
 
     /// <summary>
