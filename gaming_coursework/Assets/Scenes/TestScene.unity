@@ -2226,12 +2226,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agentPrefab: {fileID: 2299854824961547874, guid: c4fc644dc2338442c89da6ee32b23e76, type: 3}
-  behaviour: {fileID: 0}
-  startCount: 10
-  driveFactor: 10
-  maxSpeed: 10
-  neighbourRadius: 2
-  avoidanceRadiusMultiplier: 0.5
+  behaviour: {fileID: 11400000, guid: ba58b24692e9a4038bbeac439e9d7c5f, type: 2}
+  startCount: 38
+  maxSpeed: 1
+  neighbourRadius: 1.5
+  avoidanceRadiusMultiplier: 0.9
 --- !u!1 &241262725
 GameObject:
   m_ObjectHideFlags: 0

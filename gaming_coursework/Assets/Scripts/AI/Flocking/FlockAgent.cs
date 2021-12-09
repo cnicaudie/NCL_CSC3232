@@ -1,22 +1,37 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
 public class FlockAgent : MonoBehaviour
 {
+    // ===================================
+    // ATTRIBUTES
+    // ===================================
+
     private Collider m_collider;
     public Collider Collider
     {
         get { return m_collider; }
     }
 
+    // ===================================
+
+    // ===================================
+    // PUBLIC METHODS
+    // ===================================
+
+    public void Move(Vector3 velocity)
+    {
+        transform.forward = velocity;
+        transform.position += velocity * Time.deltaTime;
+    }
+
+    // ===================================
+    // PRIVATE METHODS
+    // ===================================
+
     private void Start()
     {
         m_collider = GetComponent<Collider>();
-    }
-
-    public void Move(Vector2 velocity)
-    {
-        transform.forward = velocity;
-        transform.position += (Vector3)velocity * Time.deltaTime;
     }
 }
