@@ -1186,7 +1186,7 @@ GameObject:
   - component: {fileID: 138419674}
   - component: {fileID: 138419673}
   - component: {fileID: 138419672}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: Trampoline
   m_TagString: Trampoline
   m_Icon: {fileID: 0}
@@ -1390,7 +1390,7 @@ GameObject:
   - component: {fileID: 180150631}
   - component: {fileID: 180150630}
   - component: {fileID: 180150629}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (4)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -4685,7 +4685,7 @@ GameObject:
   - component: {fileID: 603111400}
   - component: {fileID: 603111399}
   - component: {fileID: 603111398}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Wall (1)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -5492,7 +5492,7 @@ GameObject:
   - component: {fileID: 694587032}
   - component: {fileID: 694587031}
   - component: {fileID: 694587030}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (9)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -6376,7 +6376,7 @@ GameObject:
   - component: {fileID: 911278777}
   - component: {fileID: 911278776}
   - component: {fileID: 911278775}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Ground
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -6647,7 +6647,7 @@ GameObject:
   - component: {fileID: 941338267}
   - component: {fileID: 941338266}
   - component: {fileID: 941338265}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (10)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -9274,7 +9274,7 @@ GameObject:
   - component: {fileID: 1224877284}
   - component: {fileID: 1224877283}
   - component: {fileID: 1224877282}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (2)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -9387,7 +9387,7 @@ GameObject:
   - component: {fileID: 1226818273}
   - component: {fileID: 1226818272}
   - component: {fileID: 1226818271}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (12)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -9863,7 +9863,7 @@ GameObject:
   - component: {fileID: 1328577929}
   - component: {fileID: 1328577928}
   - component: {fileID: 1328577927}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (11)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -10551,7 +10551,7 @@ GameObject:
   - component: {fileID: 1422065458}
   - component: {fileID: 1422065457}
   - component: {fileID: 1422065456}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (1)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -10776,7 +10776,7 @@ GameObject:
   - component: {fileID: 1465417754}
   - component: {fileID: 1465417753}
   - component: {fileID: 1465417752}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (3)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -11208,7 +11208,7 @@ GameObject:
   - component: {fileID: 1485990256}
   - component: {fileID: 1485990255}
   - component: {fileID: 1485990254}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (7)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -11552,7 +11552,7 @@ GameObject:
   - component: {fileID: 1542393706}
   - component: {fileID: 1542393705}
   - component: {fileID: 1542393704}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (6)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -12320,7 +12320,7 @@ GameObject:
   - component: {fileID: 1664753030}
   - component: {fileID: 1664753029}
   - component: {fileID: 1664753028}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (5)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -13179,7 +13179,7 @@ GameObject:
   - component: {fileID: 1734191452}
   - component: {fileID: 1734191451}
   - component: {fileID: 1734191450}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (14)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -13738,7 +13738,7 @@ GameObject:
   - component: {fileID: 1810570497}
   - component: {fileID: 1810570496}
   - component: {fileID: 1810570495}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (8)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -16045,7 +16045,7 @@ GameObject:
   - component: {fileID: 2110289731}
   - component: {fileID: 2110289730}
   - component: {fileID: 2110289729}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (13)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -16326,6 +16326,10 @@ PrefabInstance:
     - target: {fileID: 2616904299295440186, guid: 56860259f732e4941b5edaa8692737a0, type: 3}
       propertyPath: m_Name
       value: Wall
+      objectReference: {fileID: 0}
+    - target: {fileID: 2616904299295440186, guid: 56860259f732e4941b5edaa8692737a0, type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 2616904299295440197, guid: 56860259f732e4941b5edaa8692737a0, type: 3}
       propertyPath: m_RootOrder
@@ -20275,6 +20279,10 @@ PrefabInstance:
     - target: {fileID: 8280335319658354180, guid: 44b048c9bc82440968a3ec5aea0cf183, type: 3}
       propertyPath: m_Name
       value: SmallWall
+      objectReference: {fileID: 0}
+    - target: {fileID: 8280335319658354180, guid: 44b048c9bc82440968a3ec5aea0cf183, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 8280335319658354181, guid: 44b048c9bc82440968a3ec5aea0cf183, type: 3}
       propertyPath: m_RootOrder

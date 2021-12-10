@@ -27,8 +27,8 @@ TagManager:
   - Bullet
   - Enemy
   - Ground
-  - WalkableWall
-  - NonWalkableWall
+  - WalkableObstacle
+  - NonWalkableObstacle
   - 
   - 
   - 

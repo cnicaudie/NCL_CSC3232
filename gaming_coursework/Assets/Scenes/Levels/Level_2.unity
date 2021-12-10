@@ -1467,7 +1467,7 @@ GameObject:
   - component: {fileID: 141158879}
   - component: {fileID: 141158878}
   - component: {fileID: 141158877}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (10)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -5042,7 +5042,7 @@ GameObject:
   - component: {fileID: 537323519}
   - component: {fileID: 537323518}
   - component: {fileID: 537323517}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (7)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -6638,7 +6638,7 @@ GameObject:
   - component: {fileID: 720088940}
   - component: {fileID: 720088939}
   - component: {fileID: 720088938}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (14)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -9771,7 +9771,7 @@ GameObject:
   - component: {fileID: 1025042263}
   - component: {fileID: 1025042262}
   - component: {fileID: 1025042261}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Wall (1)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -12282,7 +12282,7 @@ GameObject:
   - component: {fileID: 1304369889}
   - component: {fileID: 1304369888}
   - component: {fileID: 1304369887}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (8)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -12939,7 +12939,7 @@ GameObject:
   - component: {fileID: 1365128234}
   - component: {fileID: 1365128233}
   - component: {fileID: 1365128232}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (13)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -14097,7 +14097,7 @@ GameObject:
   - component: {fileID: 1465131486}
   - component: {fileID: 1465131485}
   - component: {fileID: 1465131484}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: SmallWall (9)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -15019,7 +15019,7 @@ GameObject:
   - component: {fileID: 1563592743}
   - component: {fileID: 1563592742}
   - component: {fileID: 1563592741}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: Trampoline
   m_TagString: Trampoline
   m_Icon: {fileID: 0}
@@ -18058,7 +18058,7 @@ GameObject:
   - component: {fileID: 1951497228}
   - component: {fileID: 1951497227}
   - component: {fileID: 1951497226}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Ground
   m_TagString: Ground
   m_Icon: {fileID: 0}

@@ -1038,7 +1038,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_groundLayer:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 6144
   m_isGrounded: 1
   m_defaultSpeed: 140
   m_airSpeed: 80
