@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Handles every agents of the flock and their behaviour
+/// </summary>
 public class Flock : MonoBehaviour
 {
     // ===================================
@@ -11,7 +14,7 @@ public class Flock : MonoBehaviour
     public FlockAgent agentPrefab;
     private List<FlockAgent> m_flockAgents;
 
-    private const float k_agentDensity = 0.9f;
+    private const float k_agentDensity = 0.3f;
 
     [Range(5, 50)]
     public int startCount = 5;
@@ -35,8 +38,8 @@ public class Flock : MonoBehaviour
     [Range(0f, 10f)]
     public float obstacleAvoidanceWeight = 1;
 
-    private float m_obstacleAvoidanceRadius = 0.6f;
-    private float m_maxAvoidanceDistance = 5f;
+    private float m_obstacleAvoidanceRadius = 0.7f;
+    private float m_maxAvoidanceDistance = 6f;
 
     private const int m_numViewDirections = 300;
     private Vector3[] m_avoidanceDirections;
@@ -99,11 +102,16 @@ public class Flock : MonoBehaviour
 
     private void SpawnAgents()
     {
+        const float baseHeight = 3f;
+
         for (int i = 0; i < startCount; i++)
         {
             Vector2 randomPosition = k_agentDensity * startCount * Random.insideUnitCircle;
-            Vector3 agentPosition = new Vector3(randomPosition.x, 3f, randomPosition.y);
+            Vector3 agentPosition = new Vector3(randomPosition.x, baseHeight, randomPosition.y);
             Quaternion agentRotation = Quaternion.Euler(transform.up * Random.Range(0f, 360f));
+
+            // Avoid spawning agents on the void
+            LevelManager.CorrectPosition(ref agentPosition);
 
             FlockAgent newAgent = Instantiate(agentPrefab, agentPosition, agentRotation, transform);
 
@@ -113,6 +121,7 @@ public class Flock : MonoBehaviour
     }
 
     /// <summary>
+    /// Generates directions to check when avoiding a collision obstacle
     /// From : https://github.com/SebLague/Boids/blob/master/Assets/Scripts/BoidHelper.cs
     /// </summary>
     private void GenerateAvoidanceDirections()
@@ -136,6 +145,9 @@ public class Flock : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the flock agents behaviours
+    /// </summary>
     private void UpdateFlock()
     {
         foreach (FlockAgent agent in m_flockAgents)
@@ -156,18 +168,22 @@ public class Flock : MonoBehaviour
 
             // Compute the final move direction
             Vector3 move = alignmentMove + avoidanceMove + cohesionMove + targetMove + obstacleAvoidanceMove;
-            move = move.normalized * maxSpeed;
 
             if (move == Vector3.zero)
             {
                 move = agent.transform.forward;
             }
 
-            // Apply move to agent
-            agent.Move(move);
+            // Apply velocity to agent
+            agent.Move(move.normalized * maxSpeed);
         }
     }
 
+    /// <summary>
+    /// Retrives a list of the agent's neighbours in a given radius
+    /// </summary>
+    /// <param name="agent"></param>
+    /// <returns></returns>
     private List<Transform> GetNeighbours(FlockAgent agent)
     {
         List<Transform> neighbours = new List<Transform>();
@@ -192,6 +208,7 @@ public class Flock : MonoBehaviour
             return agent.transform.forward;
         }
 
+        // Compute the average of the flock group forward direction
         Vector3 alignmentMove = agent.transform.forward;
 
         foreach (Transform neighbour in neighbours)
@@ -211,6 +228,7 @@ public class Flock : MonoBehaviour
             return Vector3.zero;
         }
 
+        // Compute the average offset to avoid surrounding flock agents 
         Vector3 avoidanceMove = Vector3.zero;
         int neighboursToAvoid = 0;
 
@@ -238,6 +256,7 @@ public class Flock : MonoBehaviour
             return PickRandomAgentPosition();
         }
 
+        // Compute average center position of the flock group
         Vector3 cohesionMove = Vector3.zero;
 
         foreach (Transform neighbour in neighbours)
@@ -270,9 +289,11 @@ public class Flock : MonoBehaviour
 
         RaycastHit hit;
 
+        // Check if a collision is going to happen
         if (Physics.SphereCast(agentPosition, m_obstacleAvoidanceRadius, agentDirection,
             out hit, m_maxAvoidanceDistance, m_obstacleMask, QueryTriggerInteraction.Ignore))
         {
+            // Look fpr the best direction to avoid the obstacle
             for (int i = 0; i < m_avoidanceDirections.Length; i++)
             {
                 Vector3 newDirection = agent.transform.TransformDirection(m_avoidanceDirections[i]);
@@ -297,7 +318,7 @@ public class Flock : MonoBehaviour
 
     private Vector3 NormalizeMoveVector(Vector3 move)
     {
-        move.y = 0f;
+        move.y = 0f; // flock agent is only moving in x and z direction
         return move.normalized;
     }
 }

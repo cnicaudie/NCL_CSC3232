@@ -61,6 +61,22 @@ public class LevelManager : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Fix the given position if not on the navmesh
+    /// </summary>
+    /// <returns></returns>
+    public static bool CorrectPosition(ref Vector3 position)
+    {
+        NavMeshHit hit;
+
+        if (NavMesh.SamplePosition(position, out hit, Mathf.Infinity, NavMesh.AllAreas))
+        {
+            position = hit.position;
+            return true;
+        }
+        return false;
+    }
+
     public void StoreObject()
     {
         m_storedObjectsCount++;

@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Handles the final movement of the flock agent
+/// </summary>
 [RequireComponent(typeof(Collider))]
 public class FlockAgent : MonoBehaviour
 {
@@ -32,5 +35,14 @@ public class FlockAgent : MonoBehaviour
     private void Start()
     {
         m_collider = GetComponent<Collider>();
+    }
+
+    private void Update()
+    {
+        // Check if agent falls off the ground
+        if (transform.position.y < -5f)
+        {
+            Destroy(gameObject);
+        }
     }
 }
