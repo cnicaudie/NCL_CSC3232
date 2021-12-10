@@ -22,22 +22,33 @@ public class Flock : MonoBehaviour
     [Header("Behaviour Weights")]
 
     [Range(0f, 10f)]
-    public float alignmentWeight = 1;
+    public float alignmentWeight = 1f;
     
     [Range(0f, 10f)]
-    public float avoidanceWeight = 1;
+    public float avoidanceWeight = 1f;
 
     [Range(0f, 10f)]
-    public float cohesionWeight = 1;
+    public float cohesionWeight = 1f;
+
+    [Header("Obstacle Collision avoidance")]
+
+    [Range(0f, 10f)]
+    public float obstacleAvoidanceWeight = 1;
+
+    private float m_obstacleAvoidanceRadius = 0.6f;
+    private float m_maxAvoidanceDistance = 5f;
+
+    private const int m_numViewDirections = 300;
+    private Vector3[] m_avoidanceDirections;
 
     [Header("Target")]
 
     [SerializeField] private Transform m_target;
 
     [Range(0f, 10f)]
-    public float targetWeight = 1;
+    public float targetWeight = 1f;
 
-    private float m_lookForTargetThreshold = 10f;
+    private float m_lookForTargetThreshold = 20f;
 
     [Header("Neighbour Detection")]
 
@@ -74,6 +85,8 @@ public class Flock : MonoBehaviour
         m_squareNeighbourRadius = Mathf.Pow(neighbourRadius, 2);
         m_squareAvoidanceRadius = m_squareNeighbourRadius * Mathf.Pow(avoidanceRadiusMultiplier, 2);
 
+        GenerateAvoidanceDirections();
+
         SpawnAgents();
     }
 
@@ -97,6 +110,30 @@ public class Flock : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// From : https://github.com/SebLague/Boids/blob/master/Assets/Scripts/BoidHelper.cs
+    /// </summary>
+    private void GenerateAvoidanceDirections()
+    {
+        m_avoidanceDirections = new Vector3[m_numViewDirections];
+
+        float goldenRatio = (1 + Mathf.Sqrt(5)) / 2;
+        float angleIncrement = Mathf.PI * 2 * goldenRatio;
+
+        for (int i = 0; i < m_numViewDirections; i++)
+        {
+            float t = (float)i / m_numViewDirections;
+            float inclination = Mathf.Acos(1 - 2 * t);
+            float azimuth = angleIncrement * i;
+
+            float x = Mathf.Sin(inclination) * Mathf.Cos(azimuth);
+            float y = Mathf.Sin(inclination) * Mathf.Sin(azimuth);
+            float z = Mathf.Cos(inclination);
+
+            m_avoidanceDirections[i] = new Vector3(x, y, z);
+        }
+    }
+
     private void UpdateFlock()
     {
         foreach (FlockAgent agent in m_flockAgents)
@@ -109,21 +146,19 @@ public class Flock : MonoBehaviour
             Vector3 avoidanceMove = ComputeAvoidanceMove(agent, neighbours) * avoidanceWeight;
             Vector3 cohesionMove = ComputeCohesionMove(agent, neighbours) * cohesionWeight;
 
-            // TODO : Add obstacle avoidance
-
             // Compute movement towards target
-            Vector3 targetOffset = m_target.position - agent.transform.position;
-            
-            Vector3 targetMove = targetOffset.magnitude > m_lookForTargetThreshold ?
-                targetOffset * targetWeight : Vector3.zero;
+            Vector3 targetMove = ComputeTargetMove(agent) * targetWeight;
+
+            // Compute obstacle avoidance move
+            Vector3 obstacleAvoidanceMove = ComputeObstacleAvoidanceMove(agent) * obstacleAvoidanceWeight;
 
             // Compute the final move direction
-            Vector3 move = alignmentMove + avoidanceMove + cohesionMove + targetMove;
+            Vector3 move = alignmentMove + avoidanceMove + cohesionMove + targetMove + obstacleAvoidanceMove;
             move = move.normalized * maxSpeed;
 
             if (move == Vector3.zero)
             {
-                move = transform.forward;
+                move = agent.transform.forward;
             }
 
             // Apply move to agent
@@ -163,10 +198,8 @@ public class Flock : MonoBehaviour
         }
 
         alignmentMove /= neighbours.Count;
-        alignmentMove = alignmentMove.normalized;
-        alignmentMove.y = 0f;
 
-        return alignmentMove;
+        return NormalizeMoveVector(alignmentMove);
     }
 
     private Vector3 ComputeAvoidanceMove(FlockAgent agent, List<Transform> neighbours)
@@ -193,10 +226,7 @@ public class Flock : MonoBehaviour
             avoidanceMove /= neighboursToAvoid;
         }
 
-        avoidanceMove = avoidanceMove.normalized;
-        avoidanceMove.y = 0f;
-
-        return avoidanceMove;
+        return NormalizeMoveVector(avoidanceMove);
     }
 
     private Vector3 ComputeCohesionMove(FlockAgent agent, List<Transform> neighbours)
@@ -215,15 +245,59 @@ public class Flock : MonoBehaviour
 
         cohesionMove /= neighbours.Count;
         cohesionMove -= agent.transform.position;
-        cohesionMove = cohesionMove.normalized;
-        cohesionMove.y = 0f;
+        
+        return NormalizeMoveVector(cohesionMove);
+    }
 
-        return cohesionMove;
+    private Vector3 ComputeTargetMove(FlockAgent agent)
+    {
+        Vector3 targetOffset = m_target.position - agent.transform.position;
+
+        if (targetOffset.magnitude > m_lookForTargetThreshold)
+        {
+            return NormalizeMoveVector(targetOffset);
+        }
+
+        return Vector3.zero;
+    }
+
+    private Vector3 ComputeObstacleAvoidanceMove(FlockAgent agent)
+    {
+        Vector3 agentPosition = agent.transform.position;
+        Vector3 agentDirection = agent.transform.forward;
+
+        int layerMask = ~LayerMask.NameToLayer("PlayerWalkable");
+
+        RaycastHit hit;
+
+        if (Physics.SphereCast(agentPosition, m_obstacleAvoidanceRadius, agentDirection,
+            out hit, m_maxAvoidanceDistance, layerMask, QueryTriggerInteraction.Ignore))
+        {
+            for (int i = 0; i < m_avoidanceDirections.Length; i++)
+            {
+                Vector3 newDirection = agent.transform.TransformDirection(m_avoidanceDirections[i]);
+
+                Ray ray = new Ray(agent.transform.position, newDirection);
+
+                if (!Physics.SphereCast(ray, m_obstacleAvoidanceRadius, m_maxAvoidanceDistance, layerMask))
+                {
+                    return NormalizeMoveVector(newDirection);
+                }
+            }
+        }
+
+        return agentDirection;
     }
 
     private Vector3 PickRandomAgentPosition()
     {
         int randomIndex = Random.Range(0, m_flockAgents.Count);
         return m_flockAgents[randomIndex].transform.position;
+    }
+
+    private Vector3 NormalizeMoveVector(Vector3 move)
+    {
+        move.y = 0f;
+        return move.normalized;
     }
 }
