@@ -55,7 +55,7 @@ public class Flock : MonoBehaviour
     [Header("Neighbour Detection")]
 
     [Range(1f, 10f)]
-    public float neighbourRadius = 2f; // TODO : add different distance per behaviour ?
+    public float neighbourRadius = 2f;
     private float m_squareNeighbourRadius;
 
     [Header("Avoidance Neighbour Detection")]
