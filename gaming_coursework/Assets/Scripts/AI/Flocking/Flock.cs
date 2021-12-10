@@ -29,7 +29,16 @@ public class Flock : MonoBehaviour
 
     [Range(0f, 10f)]
     public float cohesionWeight = 1;
-    
+
+    [Header("Target")]
+
+    [SerializeField] private Transform m_target;
+
+    [Range(0f, 10f)]
+    public float targetWeight = 1;
+
+    private float m_lookForTargetThreshold = 10f;
+
     [Header("Neighbour Detection")]
 
     [Range(1f, 10f)]
@@ -56,6 +65,11 @@ public class Flock : MonoBehaviour
     private void Start()
     {
         m_flockAgents = new List<FlockAgent>();
+
+        if (m_target == null)
+        {
+            m_target = transform;
+        }
 
         m_squareNeighbourRadius = Mathf.Pow(neighbourRadius, 2);
         m_squareAvoidanceRadius = m_squareNeighbourRadius * Mathf.Pow(avoidanceRadiusMultiplier, 2);
@@ -95,11 +109,16 @@ public class Flock : MonoBehaviour
             Vector3 avoidanceMove = ComputeAvoidanceMove(agent, neighbours) * avoidanceWeight;
             Vector3 cohesionMove = ComputeCohesionMove(agent, neighbours) * cohesionWeight;
 
-            // TODO : Add obstacle avoidance + random target for agent with no neighbour ?
+            // TODO : Add obstacle avoidance
+
+            // Compute movement towards target
+            Vector3 targetOffset = m_target.position - agent.transform.position;
+            
+            Vector3 targetMove = targetOffset.magnitude > m_lookForTargetThreshold ?
+                targetOffset * targetWeight : Vector3.zero;
 
             // Compute the final move direction
-            Vector3 move = alignmentMove + avoidanceMove + cohesionMove;
-            //move = Vector3.SmoothDamp(agent.transform.forward, move, ref currentVelocity, smoothDamp);
+            Vector3 move = alignmentMove + avoidanceMove + cohesionMove + targetMove;
             move = move.normalized * maxSpeed;
 
             if (move == Vector3.zero)
@@ -184,7 +203,7 @@ public class Flock : MonoBehaviour
     {
         if (neighbours.Count == 0)
         {
-            return Vector3.zero;
+            return PickRandomAgentPosition();
         }
 
         Vector3 cohesionMove = Vector3.zero;
@@ -200,5 +219,11 @@ public class Flock : MonoBehaviour
         cohesionMove.y = 0f;
 
         return cohesionMove;
+    }
+
+    private Vector3 PickRandomAgentPosition()
+    {
+        int randomIndex = Random.Range(0, m_flockAgents.Count);
+        return m_flockAgents[randomIndex].transform.position;
     }
 }
