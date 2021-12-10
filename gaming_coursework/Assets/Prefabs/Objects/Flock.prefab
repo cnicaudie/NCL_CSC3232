@@ -50,6 +50,9 @@ MonoBehaviour:
   avoidanceWeight: 3
   cohesionWeight: 1
   obstacleAvoidanceWeight: 8
+  m_obstacleMask:
+    serializedVersion: 2
+    m_Bits: 12288
   m_target: {fileID: 3894345244319662981}
   targetWeight: 9
   neighbourRadius: 1.5

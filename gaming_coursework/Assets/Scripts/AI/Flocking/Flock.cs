@@ -41,6 +41,8 @@ public class Flock : MonoBehaviour
     private const int m_numViewDirections = 300;
     private Vector3[] m_avoidanceDirections;
 
+    [SerializeField] private LayerMask m_obstacleMask;
+
     [Header("Target")]
 
     [SerializeField] private Transform m_target;
@@ -48,7 +50,7 @@ public class Flock : MonoBehaviour
     [Range(0f, 10f)]
     public float targetWeight = 1f;
 
-    private float m_lookForTargetThreshold = 20f;
+    private float m_lookForTargetThreshold = 15f;
 
     [Header("Neighbour Detection")]
 
@@ -266,12 +268,10 @@ public class Flock : MonoBehaviour
         Vector3 agentPosition = agent.transform.position;
         Vector3 agentDirection = agent.transform.forward;
 
-        int layerMask = ~LayerMask.NameToLayer("PlayerWalkable");
-
         RaycastHit hit;
 
         if (Physics.SphereCast(agentPosition, m_obstacleAvoidanceRadius, agentDirection,
-            out hit, m_maxAvoidanceDistance, layerMask, QueryTriggerInteraction.Ignore))
+            out hit, m_maxAvoidanceDistance, m_obstacleMask, QueryTriggerInteraction.Ignore))
         {
             for (int i = 0; i < m_avoidanceDirections.Length; i++)
             {
@@ -279,7 +279,7 @@ public class Flock : MonoBehaviour
 
                 Ray ray = new Ray(agent.transform.position, newDirection);
 
-                if (!Physics.SphereCast(ray, m_obstacleAvoidanceRadius, m_maxAvoidanceDistance, layerMask))
+                if (!Physics.SphereCast(ray, m_obstacleAvoidanceRadius, m_maxAvoidanceDistance, m_obstacleMask))
                 {
                     return NormalizeMoveVector(newDirection);
                 }
@@ -292,7 +292,7 @@ public class Flock : MonoBehaviour
     private Vector3 PickRandomAgentPosition()
     {
         int randomIndex = Random.Range(0, m_flockAgents.Count);
-        return m_flockAgents[randomIndex].transform.position;
+        return NormalizeMoveVector(m_flockAgents[randomIndex].transform.position);
     }
 
     private Vector3 NormalizeMoveVector(Vector3 move)
