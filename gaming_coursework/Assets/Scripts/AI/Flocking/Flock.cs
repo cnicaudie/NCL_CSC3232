@@ -150,8 +150,20 @@ public class Flock : MonoBehaviour
     /// </summary>
     private void UpdateFlock()
     {
-        foreach (FlockAgent agent in m_flockAgents)
+        // Note : the .toArray() in the foreach loop avoids getting an error 
+        //        when removing an element from the list while iterating on it
+
+        foreach (FlockAgent agent in m_flockAgents.ToArray())
         {
+            // Check if agent falls off the ground
+            if (agent.transform.position.y < -5f)
+            {
+                Debug.Log("Spider " + agent.name + " died!");
+                m_flockAgents.Remove(agent);
+                Destroy(agent.gameObject);
+                continue;
+            }
+
             // Get local neighbours
             List<Transform> neighbours = GetNeighbours(agent);
 
