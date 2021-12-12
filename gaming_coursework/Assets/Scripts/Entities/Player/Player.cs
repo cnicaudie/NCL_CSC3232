@@ -13,8 +13,6 @@ public class Player : Entity
 
     private Animator m_animator;
 
-    [SerializeField] private GameObject m_hitBlood;
-
     // Dynamic change of physic material properties
     [SerializeField] private PhysicMaterial m_defaultMaterial;
     [SerializeField] private PhysicMaterial m_injuredMaterial;
@@ -88,11 +86,6 @@ public class Player : Entity
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy") && m_isDamageable)
         {
-            // Instantiate hit effect
-            Vector3 impactPoint = collision.GetContact(0).point;
-            Quaternion impactAngle = Quaternion.Euler(collision.GetContact(0).normal);
-            EffectsManager.InstantiateEffect(m_hitBlood, impactPoint, impactAngle, transform);
-
             Enemy enemy = collision.gameObject.GetComponentInParent<Enemy>();
 
             // Enemy attack response
@@ -103,6 +96,12 @@ public class Player : Entity
                 if (hitArea && hitArea.bodyPart == HitArea.BodyPart.Glove)
                 {
                     Debug.Log("Player got punched by enemy");
+
+                    // Instantiate hit effect
+                    Vector3 impactPoint = collision.GetContact(0).point;
+                    Quaternion impactAngle = Quaternion.Euler(collision.GetContact(0).normal);
+                    EffectsManager.InstantiateEffect("blood", impactPoint, impactAngle, transform);
+
                     SoundManager.Instance.PlaySound("punch");
 
                     Damage(hitArea.GetAttackDamage());

@@ -61,7 +61,13 @@ public class FlockAgent : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player") && !m_hasFallen && !m_wasKilled)
         {
+            // Instantiate hit effect
+            Vector3 impactPoint = collision.GetContact(0).point;
+            Quaternion impactAngle = Quaternion.Euler(collision.GetContact(0).normal);
+            EffectsManager.InstantiateEffect("blood", impactPoint, impactAngle);
+
             SoundManager.Instance.PlaySound("punch");
+
             m_wasKilled = true;
         }
     }

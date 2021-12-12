@@ -21,9 +21,6 @@ public class Bullet : MonoBehaviour
     private float m_explosionForce = 7000f;
     private float m_explosionRadius = 30f;
 
-    [SerializeField] private GameObject m_hitExplosion;
-    [SerializeField] private GameObject m_hitImpact;
-
     public delegate void OnBulletImpact(GameObject bulletGameObject);
     public event OnBulletImpact DestroyBullet;
 
@@ -104,7 +101,7 @@ public class Bullet : MonoBehaviour
             // Instantiate hit impact effect
             Vector3 impactPoint = collision.GetContact(0).point;
             Quaternion impactAngle = Quaternion.Euler(collision.GetContact(0).normal);
-            EffectsManager.InstantiateEffect(m_hitImpact, impactPoint, impactAngle, transform.parent);
+            EffectsManager.InstantiateEffect("impact", impactPoint, impactAngle, transform.parent);
         }
 
         Destroy();
@@ -117,7 +114,7 @@ public class Bullet : MonoBehaviour
     private void Explode(GameObject collisionObject)
     {
         // Instantiate explosion effect
-        EffectsManager.InstantiateEffect(m_hitExplosion, transform.position, transform.rotation);
+        EffectsManager.InstantiateEffect("explosion", transform.position, transform.rotation);
 
         // Apply explosion force
         Enemy enemy = collisionObject.GetComponent<Enemy>();
