@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Utility class to manage the different sound effects (background and one shot)
+/// </summary>
 [RequireComponent(typeof(AudioSource))]
 public class SoundManager : Singleton<SoundManager>
 {

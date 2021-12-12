@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Generic class for the singleton design pattern
+/// </summary>
 public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 {
     // ===================================

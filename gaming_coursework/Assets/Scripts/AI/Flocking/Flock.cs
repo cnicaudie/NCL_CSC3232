@@ -11,73 +11,52 @@ public class Flock : MonoBehaviour
     // ===================================
 
     [Header("Flock Agents")]
+
     public FlockAgent agentPrefab;
     private List<FlockAgent> m_flockAgents;
 
+    [Range(5, 50)] public int startCount = 5;
+    [Range(1f, 100f)] public float maxSpeed = 10f;
     private const float k_agentDensity = 0.3f;
-
-    [Range(5, 50)]
-    public int startCount = 5;
-
-    [Range(1f, 100f)]
-    public float maxSpeed = 10f;
 
     public delegate void OnFlockDeath();
     public event OnFlockDeath FlockDie;
 
     [Header("Behaviour Weights")]
 
-    [Range(0f, 10f)]
-    public float alignmentWeight = 1f;
+    [Range(0f, 10f)] public float alignmentWeight = 1f;
+    [Range(0f, 10f)] public float avoidanceWeight = 1f;
+    [Range(0f, 10f)] public float cohesionWeight = 1f;
     
-    [Range(0f, 10f)]
-    public float avoidanceWeight = 1f;
-
-    [Range(0f, 10f)]
-    public float cohesionWeight = 1f;
-
     [Header("Obstacle Collision avoidance")]
 
-    [Range(0f, 10f)]
-    public float obstacleAvoidanceWeight = 1;
+    [Range(0f, 10f)] public float obstacleAvoidanceWeight = 1;
+    [SerializeField] private LayerMask m_obstacleMask;
 
     private float m_obstacleAvoidanceRadius = 0.7f;
     private float m_maxAvoidanceDistance = 6f;
-
-    private const int m_numViewDirections = 300;
+    private const int m_nbAvoidanceDirections = 300;
     private Vector3[] m_avoidanceDirections;
-
-    [SerializeField] private LayerMask m_obstacleMask;
 
     [Header("Target")]
 
     [SerializeField] private Vector3 m_targetPosition;
-
-    [Range(0f, 10f)]
-    public float targetWeight = 1f;
+    [Range(0f, 10f)] public float targetWeight = 1f;
 
     private float m_lookForTargetThreshold = 15f;
-
     private float m_newTargetRange = 30f;
     private float m_pickNewTargetCooldown = 4f;
     private float m_lastTargetPickTime = 0f;
 
     [Header("Neighbour Detection")]
 
-    [Range(1f, 10f)]
-    public float neighbourRadius = 2f;
+    [Range(1f, 10f)] public float neighbourRadius = 2f;
     private float m_squareNeighbourRadius;
 
     [Header("Avoidance Neighbour Detection")]
 
-    [Range(0f, 1f)]
-    public float avoidanceRadiusMultiplier = 0.5f;
-
+    [Range(0f, 1f)] public float avoidanceRadiusMultiplier = 0.5f;
     private float m_squareAvoidanceRadius;
-    public float SquareAvoidanceRadius
-    {
-        get { return m_squareAvoidanceRadius; }
-    }
 
     // ===================================
 
@@ -111,6 +90,34 @@ public class Flock : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Generates directions to check when avoiding a collision obstacle
+    /// From : https://github.com/SebLague/Boids/blob/master/Assets/Scripts/BoidHelper.cs
+    /// </summary>
+    private void GenerateAvoidanceDirections()
+    {
+        m_avoidanceDirections = new Vector3[m_nbAvoidanceDirections];
+
+        float goldenRatio = (1 + Mathf.Sqrt(5)) / 2;
+        float angleIncrement = Mathf.PI * 2 * goldenRatio;
+
+        for (int i = 0; i < m_nbAvoidanceDirections; i++)
+        {
+            float t = (float)i / m_nbAvoidanceDirections;
+            float inclination = Mathf.Acos(1 - 2 * t);
+            float azimuth = angleIncrement * i;
+
+            float x = Mathf.Sin(inclination) * Mathf.Cos(azimuth);
+            float y = Mathf.Sin(inclination) * Mathf.Sin(azimuth);
+            float z = Mathf.Cos(inclination);
+
+            m_avoidanceDirections[i] = new Vector3(x, y, z);
+        }
+    }
+
+    /// <summary>
+    /// Instantiates and place agents randomly on the level based on its NavMesh
+    /// </summary>
     private void SpawnAgents()
     {
         const float baseHeight = 3f;
@@ -132,30 +139,8 @@ public class Flock : MonoBehaviour
     }
 
     /// <summary>
-    /// Generates directions to check when avoiding a collision obstacle
-    /// From : https://github.com/SebLague/Boids/blob/master/Assets/Scripts/BoidHelper.cs
+    /// Update the target position everytime the cooldown is over 
     /// </summary>
-    private void GenerateAvoidanceDirections()
-    {
-        m_avoidanceDirections = new Vector3[m_numViewDirections];
-
-        float goldenRatio = (1 + Mathf.Sqrt(5)) / 2;
-        float angleIncrement = Mathf.PI * 2 * goldenRatio;
-
-        for (int i = 0; i < m_numViewDirections; i++)
-        {
-            float t = (float)i / m_numViewDirections;
-            float inclination = Mathf.Acos(1 - 2 * t);
-            float azimuth = angleIncrement * i;
-
-            float x = Mathf.Sin(inclination) * Mathf.Cos(azimuth);
-            float y = Mathf.Sin(inclination) * Mathf.Sin(azimuth);
-            float z = Mathf.Cos(inclination);
-
-            m_avoidanceDirections[i] = new Vector3(x, y, z);
-        }
-    }
-
     private void UpdateTargetPosition()
     {
         m_lastTargetPickTime += Time.deltaTime;
@@ -182,6 +167,7 @@ public class Flock : MonoBehaviour
 
         foreach (FlockAgent agent in m_flockAgents.ToArray())
         {
+            // Check if agent is dead (if so removes it from the list and destroys it)
             if (agent.HasFallen || agent.WasKilled)
             {
                 Debug.Log("Spider " + agent.name + " died!");
@@ -344,6 +330,7 @@ public class Flock : MonoBehaviour
 
                 Ray ray = new Ray(agent.transform.position, newDirection);
 
+                // If no collision on that direction, then returns it
                 if (!Physics.SphereCast(ray, m_obstacleAvoidanceRadius, m_maxAvoidanceDistance, m_obstacleMask))
                 {
                     return NormalizeMoveVector(newDirection);
