@@ -25,10 +25,10 @@ TagManager:
   - Player
   - Pickable
   - Bullet
-  - PlayerWalkable
   - Enemy
-  - 
-  - 
+  - Ground
+  - WalkableObstacle
+  - NonWalkableObstacle
   - 
   - 
   - 
