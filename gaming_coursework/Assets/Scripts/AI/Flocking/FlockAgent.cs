@@ -61,6 +61,7 @@ public class FlockAgent : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player") && !m_hasFallen && !m_wasKilled)
         {
+            SoundManager.Instance.PlaySound("punch");
             m_wasKilled = true;
         }
     }
