@@ -46,6 +46,6 @@ Coursework project for the Gaming Technologies and Simulations module.
 
 #### Spiders level (blue level points) :
 - Run/jump around the map ;
-- Walk on spiders ;
+- Walk on spiders to kill them ;
 - When all spiders are killed : you win ;
 - If the timer ends (2 minutes) : you lose.
