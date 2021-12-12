@@ -22,6 +22,9 @@ public class Flock : MonoBehaviour
     [Range(1f, 100f)]
     public float maxSpeed = 10f;
 
+    public delegate void OnFlockDeath();
+    public event OnFlockDeath FlockDie;
+
     [Header("Behaviour Weights")]
 
     [Range(0f, 10f)]
@@ -179,12 +182,17 @@ public class Flock : MonoBehaviour
 
         foreach (FlockAgent agent in m_flockAgents.ToArray())
         {
-            // Check if agent falls off the ground
-            if (agent.transform.position.y < -5f)
+            if (agent.HasFallen || agent.WasKilled)
             {
                 Debug.Log("Spider " + agent.name + " died!");
                 m_flockAgents.Remove(agent);
                 Destroy(agent.gameObject);
+
+                if (m_flockAgents.Count == 0 && FlockDie != null)
+                {
+                    FlockDie();
+                }
+
                 continue;
             }
 

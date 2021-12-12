@@ -7,13 +7,27 @@ using UnityEngine.AI;
 /// </summary>
 public class LevelManager : MonoBehaviour
 {
+    public enum LevelType
+    {
+        Placezones, Spiders
+    }
+
     // ===================================
     // ATTRIBUTES
     // ===================================
 
+    public LevelType levelType;
+
     [SerializeField] private float m_gravityScale;
     [SerializeField] private float m_levelMaxDistance = 10f;
 
+    public delegate void OnLevelWon();
+    public event OnLevelWon LevelWon;
+
+    public delegate void OnLevelLost();
+    public event OnLevelLost LevelLost;
+
+    // Placezone Level Type
     private Placezone[] m_placezones;
     private int m_storedObjectsCount = 0;
 
@@ -23,11 +37,9 @@ public class LevelManager : MonoBehaviour
     private List<Pickable> m_pickables;
     private int m_pickablesCount;
 
-    public delegate void OnLevelWon();
-    public event OnLevelWon LevelWon;
-
-    public delegate void OnLevelLost();
-    public event OnLevelLost LevelLost;
+    // Spiders Level Type
+    [SerializeField] private float m_timer = 120f; // 2mn to complete level
+    private Flock m_spidersFlock;
 
     // ===================================
 
@@ -110,6 +122,16 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    public void SpidersDead()
+    {
+        Debug.Log("The spider flock was eliminated !");
+
+        if (LevelWon != null)
+        {
+            LevelWon();
+        }
+    }
+
     // ===================================
     // PRIVATE METHODS
     // ===================================
@@ -118,6 +140,23 @@ public class LevelManager : MonoBehaviour
     {
         InitGravity();
 
+        switch(levelType)
+        {
+            case LevelType.Placezones:
+                InitPlacezonesLevel();
+                break;
+
+            case LevelType.Spiders:
+                InitSpidersLevel();
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void InitPlacezonesLevel()
+    {
         m_placezones = FindObjectsOfType<Placezone>();
 
         for (int i = 0; i < m_placezones.Length; i++)
@@ -127,11 +166,17 @@ public class LevelManager : MonoBehaviour
         }
 
         SpawnPickables();
-        
+
         for (int i = 0; i < m_pickablesCount; i++)
         {
             m_pickables[i].DestroyPickable += DestroyPickable;
         }
+    }
+
+    private void InitSpidersLevel()
+    {
+        m_spidersFlock = FindObjectOfType<Flock>();
+        m_spidersFlock.FlockDie += SpidersDead;
     }
 
     /// <summary>
@@ -173,5 +218,19 @@ public class LevelManager : MonoBehaviour
         }
 
         m_pickableInstance.gameObject.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (GameManager.Instance.IsGamePlaying())
+        {
+            m_timer -= Time.deltaTime;
+
+            if (m_timer <= 0f && LevelLost != null)
+            {
+                Debug.Log("Time's up !");
+                LevelLost();
+            }
+        } 
     }
 }

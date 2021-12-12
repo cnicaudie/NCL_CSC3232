@@ -16,6 +16,18 @@ public class FlockAgent : MonoBehaviour
         get { return m_collider; }
     }
 
+    private bool m_hasFallen = false;
+    public bool HasFallen
+    {
+        get { return m_hasFallen; }
+    }
+
+    private bool m_wasKilled = false;
+    public bool WasKilled
+    {
+        get { return m_wasKilled; }
+    }
+
     // ===================================
 
     // ===================================
@@ -35,5 +47,21 @@ public class FlockAgent : MonoBehaviour
     private void Start()
     {
         m_collider = GetComponent<Collider>();
+    }
+
+    private void Update()
+    {
+        if (transform.position.y < -5f && !m_hasFallen && !m_wasKilled)
+        {
+            m_hasFallen = true;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player") && !m_hasFallen && !m_wasKilled)
+        {
+            m_wasKilled = true;
+        }
     }
 }
