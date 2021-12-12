@@ -1,11 +1,6 @@
-
 # NCL_CSC3232
 
 Coursework project for the Gaming Technologies and Simulations module.
-
-## Pitch
-
-// TODO
 
 ## Launch project
 ### From Unity :
@@ -35,14 +30,22 @@ Coursework project for the Gaming Technologies and Simulations module.
 ### Overworld (spaceship) :
 - Start the spaceship ;
 - Fly around the earth/moon ;
-- Stop above a level point (red point) ;
+- Stop above a level point (red/blue points) ;
 - Stop/land the spaceship ;
 - Click on "play" to launch the level.
 
 ### Encounter levels (astronaut) :
+
+#### Placezones level (red level points) :
 - Run/jump around the map ;
 - Pick up the white cubes and place them in the green placezones ;
 - Avoid enemies ;
 - Possibility to shoot enemies (with bullets) or stun them (by throwing a cube on them) ;
 - When all placezones are filled : you win ;
 - If you die or not enough cubes are left : you lose.
+
+#### Spiders level (blue level points) :
+- Run/jump around the map ;
+- Walk on spiders ;
+- When all spiders are killed : you win ;
+- If the timer ends (2 minutes) : you lose.

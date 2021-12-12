@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 /// <summary>
 /// Manage the game in its globality (states / UI / win / lose)
 /// </summary>
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
     public enum GameState
     {
@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     // ATTRIBUTES
     // ===================================
 
-    public static GameState s_gameState;
+    private GameState m_gameState;
 
     private UIManager m_uiManager;
     private CameraController m_camera;
@@ -40,14 +40,19 @@ public class GameManager : MonoBehaviour
     // PUBLIC METHODS
     // ===================================
 
-    public static bool IsGamePlaying()
+    public bool IsGamePlaying()
     {
-        return s_gameState == GameState.Level;
+        return m_gameState == GameState.Level;
     }
 
-    public static bool IsOverworldPlaying()
+    public bool IsOverworldPlaying()
     {
-        return s_gameState == GameState.Overworld;
+        return m_gameState == GameState.Overworld;
+    }
+
+    public GameState GetGameState()
+    {
+        return m_gameState;
     }
 
     public void PlayGame()
@@ -97,21 +102,6 @@ public class GameManager : MonoBehaviour
     // PRIVATE METHODS
     // ===================================
 
-    /// <summary>
-    /// Makes the GameManager a "Don't Destroy On Load" object (singleton)
-    /// </summary>
-    private void Awake()
-    {
-        GameManager[] gameManagers = FindObjectsOfType<GameManager>();
-
-        if (gameManagers.Length > 1)
-        {
-            Destroy(gameObject);
-        }
-
-        DontDestroyOnLoad(gameObject);
-    }
-
     private void Start()
     {
         m_uiManager = FindObjectOfType<UIManager>();
@@ -121,7 +111,7 @@ public class GameManager : MonoBehaviour
         {
             case StartType.Overworld:
                 m_camera = FindObjectOfType<CameraController>();
-                s_gameState = GameState.Menu;
+                SetGameState(GameState.Menu);
                 break;
 
             case StartType.Level:
@@ -138,7 +128,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Initializing Overworld...");
 
-        s_gameState = GameState.Overworld;
+        SetGameState(GameState.Overworld);
 
         m_camera = FindObjectOfType<CameraController>();
 
@@ -152,7 +142,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Initializing Level...");
 
-        s_gameState = GameState.Level;
+        SetGameState(GameState.Level);
 
         m_camera = FindObjectOfType<CameraController>();
 
@@ -164,6 +154,12 @@ public class GameManager : MonoBehaviour
         m_player.EntityDie += LevelLost;
 
         Debug.Log("Level initialized !");
+    }
+
+    private void SetGameState(GameState gameState)
+    {
+        m_gameState = gameState;
+        SoundManager.Instance.PlayBackground(gameState);
     }
 
     private IEnumerator LoadNextSceneAsync(string sceneName, bool isLevel)
@@ -202,7 +198,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Level Lost !");
 
-        s_gameState = GameState.Menu;
+        SetGameState(GameState.Menu);
         m_camera.SetCameraMode(CameraController.CameraMode.Menu);
         m_uiManager.ToggleLoseLevelMenu();
     }
@@ -211,7 +207,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Level Won !");
 
-        s_gameState = GameState.Menu;
+        SetGameState(GameState.Menu);
         m_camera.SetCameraMode(CameraController.CameraMode.Menu);
         m_uiManager.ToggleWinLevelMenu();
     }
