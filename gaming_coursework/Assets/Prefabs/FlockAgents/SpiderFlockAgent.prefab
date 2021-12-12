@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6481012473796619342}
   - component: {fileID: 1112922046868526584}
-  - component: {fileID: 6700176874803669819}
   m_Layer: 0
   m_Name: Spider
   m_TagString: Untagged
@@ -53,18 +52,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &6700176874803669819
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3875126463404939676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7f2d838583374f57918c3c3b623909e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6607893208739892737
 GameObject:
   m_ObjectHideFlags: 0
