@@ -48,12 +48,16 @@ public class Flock : MonoBehaviour
 
     [Header("Target")]
 
-    [SerializeField] private Transform m_target;
+    [SerializeField] private Vector3 m_targetPosition;
 
     [Range(0f, 10f)]
     public float targetWeight = 1f;
 
     private float m_lookForTargetThreshold = 15f;
+
+    private float m_newTargetRange = 30f;
+    private float m_pickNewTargetCooldown = 4f;
+    private float m_lastTargetPickTime = 0f;
 
     [Header("Neighbour Detection")]
 
@@ -82,9 +86,9 @@ public class Flock : MonoBehaviour
     {
         m_flockAgents = new List<FlockAgent>();
 
-        if (m_target == null)
+        if (m_targetPosition == null)
         {
-            m_target = transform;
+            m_targetPosition = transform.position;
         }
 
         m_squareNeighbourRadius = Mathf.Pow(neighbourRadius, 2);
@@ -97,7 +101,11 @@ public class Flock : MonoBehaviour
 
     private void Update()
     {
-        UpdateFlock();
+        if (GameManager.Instance.IsGamePlaying())
+        {
+            UpdateTargetPosition();
+            UpdateFlock();
+        }
     }
 
     private void SpawnAgents()
@@ -142,6 +150,22 @@ public class Flock : MonoBehaviour
             float z = Mathf.Cos(inclination);
 
             m_avoidanceDirections[i] = new Vector3(x, y, z);
+        }
+    }
+
+    private void UpdateTargetPosition()
+    {
+        m_lastTargetPickTime += Time.deltaTime;
+
+        if (m_lastTargetPickTime >= m_pickNewTargetCooldown)
+        {
+            Vector3 nextTargetPosition;
+
+            if (LevelManager.GetRandomPosition(transform.position, m_newTargetRange, out nextTargetPosition))
+            {
+                m_targetPosition = nextTargetPosition;
+                m_lastTargetPickTime = 0f;
+            }
         }
     }
 
@@ -284,7 +308,7 @@ public class Flock : MonoBehaviour
 
     private Vector3 ComputeTargetMove(FlockAgent agent)
     {
-        Vector3 targetOffset = m_target.position - agent.transform.position;
+        Vector3 targetOffset = m_targetPosition - agent.transform.position;
 
         if (targetOffset.magnitude > m_lookForTargetThreshold)
         {
@@ -332,5 +356,14 @@ public class Flock : MonoBehaviour
     {
         move.y = 0f; // flock agent is only moving in x and z direction
         return move.normalized;
+    }
+
+    /// <summary>
+    /// Debugging gizmos
+    /// </summary>
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawCube(m_targetPosition, new Vector3(0.5f, 0.5f, 0.5f));
     }
 }
