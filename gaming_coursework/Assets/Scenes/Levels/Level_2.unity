@@ -11684,7 +11684,7 @@ GameObject:
   - component: {fileID: 1225079118}
   - component: {fileID: 1225079117}
   - component: {fileID: 1225079116}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: MovingWall (2)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -17417,7 +17417,7 @@ GameObject:
   - component: {fileID: 1861863581}
   - component: {fileID: 1861863580}
   - component: {fileID: 1861863579}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: MovingWall (1)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -18501,7 +18501,7 @@ GameObject:
   - component: {fileID: 1984835301}
   - component: {fileID: 1984835300}
   - component: {fileID: 1984835299}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: MovingWall
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -19193,7 +19193,7 @@ GameObject:
   - component: {fileID: 2070687861}
   - component: {fileID: 2070687860}
   - component: {fileID: 2070687859}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: MovingWall (3)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}

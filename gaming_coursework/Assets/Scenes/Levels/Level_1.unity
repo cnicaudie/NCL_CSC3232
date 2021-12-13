@@ -13003,7 +13003,7 @@ GameObject:
   - component: {fileID: 1731840010}
   - component: {fileID: 1731840014}
   - component: {fileID: 1731840015}
-  m_Layer: 10
+  m_Layer: 12
   m_Name: MovingWall
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
