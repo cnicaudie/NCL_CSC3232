@@ -103,7 +103,7 @@ public class Spaceship : MonoBehaviour
 
         if (!m_isHovering)
         {
-            SoundManager.Instance.PauseSound();
+            SoundManager.Instance.PauseLoopSound();
         }
     }
 

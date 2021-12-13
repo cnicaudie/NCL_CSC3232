@@ -121,7 +121,7 @@ public class PlayerMovement : MonoBehaviour
             }
             else if (!m_isJumping)
             {
-                SoundManager.Instance.PauseSound();
+                SoundManager.Instance.PauseLoopSound();
             }
 
             if (!m_isMoving)
@@ -137,7 +137,7 @@ public class PlayerMovement : MonoBehaviour
             if (m_isMoving)
             {
                 m_isMoving = false;
-                SoundManager.Instance.PauseSound();
+                SoundManager.Instance.PauseLoopSound();
             }
 
             SlowdownVelocity();

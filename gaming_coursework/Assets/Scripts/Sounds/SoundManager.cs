@@ -86,10 +86,12 @@ public class SoundManager : Singleton<SoundManager>
         }
     }
 
-    public void PauseSound()
+    public void PauseLoopSound()
     {
-        m_audioSource.Stop();
-        m_isLooping = false;
+        if (m_audioSource.isPlaying && m_isLooping)
+        {
+            PauseSound();
+        }
     }
 
     // ===================================
@@ -222,5 +224,12 @@ public class SoundManager : Singleton<SoundManager>
         m_audioSource.pitch = pitch;
         m_audioSource.clip = clip;
         m_audioSource.Play();
+    }
+
+
+    private void PauseSound()
+    {
+        m_audioSource.Stop();
+        m_isLooping = false;
     }
 }
